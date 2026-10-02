@@ -17,7 +17,11 @@ The project compares a Deep Q-Network (DQN) trained against a random opponent wi
 
 Positive payoff means the listed agent won chips on average.
 
-These results are preliminary. They use limited training runs and do not yet measure exploitability or statistical uncertainty.
+These are fixed-checkpoint evaluation results. The intervals measure evaluation-seed variation, not retraining variance, and exploitability has not yet been measured.
+
+![Baseline evaluation results](results/baseline_summary.png)
+
+See [RESULTS.md](RESULTS.md) for the complete methodology, numerical results, and limitations.
 
 ## Features
 
