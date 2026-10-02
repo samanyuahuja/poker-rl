@@ -54,41 +54,66 @@ Install the dependencies:
 python -m pip install -r requirements.txt
 ```
 
-## Commands
+## Reproducible Experiment CLI
 
-Train the DQN:
+The primary interface is the `poker_rl` command-line package.
+
+Train one agent with a fixed wall-clock budget:
+
+```bash
+python -m poker_rl train \
+  --algorithm dqn \
+  --seed 1 \
+  --budget-seconds 300
+```
+
+Valid algorithms are `dqn`, `nfsp`, and `cfr`.
+
+Train multiple baselines under the same time budget:
+
+```bash
+python -m poker_rl suite \
+  --algorithms dqn nfsp cfr \
+  --seeds 1 2 3 4 5 \
+  --budget-seconds 300 \
+  --output artifacts/baseline_suite.csv
+```
+
+Evaluate two trained agents from both player positions:
+
+```bash
+python -m poker_rl evaluate \
+  --agent-a artifacts/baseline-dqn-seed1-budget300s \
+  --agent-b random \
+  --seeds 11 22 33 44 55 \
+  --games-per-seat 10000 \
+  --output results/dqn_vs_random.csv
+```
+
+Use `random` as either agent to select the random-policy baseline.
+
+Each training run saves:
+
+- `config.json`: requested algorithm, seed, and budget
+- `environment.json`: Python, platform, and Git metadata
+- `summary.json`: completed units and elapsed training time
+- `training_progress.csv`: progress measurements during training
+- Model checkpoints needed for later evaluation
+
+Generated run artifacts and model checkpoints are excluded from Git because they can be recreated from the recorded configuration.
+
+The comparison budget is wall-clock training time. DQN and NFSP report self-play episodes, while CFR reports iterations, so those unit counts should not be compared directly.
+
+## Legacy Commands
+
+The original standalone scripts remain available for reproducing the early experiments:
 
 ```bash
 python main.py
-```
-
-Evaluate the DQN from both seats:
-
-```bash
 python evaluate.py
-```
-
-Train NFSP agents through self-play:
-
-```bash
 python train_self_play.py
-```
-
-Continue NFSP training:
-
-```bash
 python continue_self_play.py
-```
-
-Compare DQN and NFSP:
-
-```bash
 python compare_models.py
-```
-
-Play against the trained DQN:
-
-```bash
 python play.py
 ```
 
