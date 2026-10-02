@@ -23,6 +23,12 @@ These are fixed-checkpoint evaluation results. The intervals measure evaluation-
 
 See [RESULTS.md](RESULTS.md) for the complete methodology, numerical results, and limitations.
 
+### Head-to-Head Comparison
+
+![Head-to-head payoff matrix](results/head_to_head_matrix.png)
+
+Positive cells favor the row agent. CFR defeated DQN and NFSP despite earning less than DQN against random play, demonstrating the difference between exploiting weak opponents and learning a robust strategy.
+
 ## Features
 
 - Leduc Hold'em simulation through RLCard
