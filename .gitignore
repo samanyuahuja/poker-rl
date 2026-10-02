@@ -1,0 +1,18 @@
+# Python virtual environment
+.venv/
+
+# Python-generated files
+__pycache__/
+*.pyc
+*.pyo
+
+# Trained model files
+*.pth
+checkpoints/
+
+# macOS
+.DS_Store
+
+# Editor settings
+.vscode/
+.idea/
