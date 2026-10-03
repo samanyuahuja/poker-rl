@@ -10,6 +10,7 @@ from poker_rl.config import TrainConfig
 from poker_rl.evaluation import evaluate_matchup
 from poker_rl.suite import run_training_suite
 from poker_rl.training import train
+from poker_rl.benchmark import run_baseline_benchmark
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -149,6 +150,45 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
         help="Destination training-manifest CSV.",
     )
+    benchmark_parser = commands.add_parser(
+        "benchmark",
+        help=(
+            "Evaluate all matched-budget baseline matchups."
+        ),
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+
+    benchmark_parser.add_argument(
+        "--manifest",
+        type=Path,
+        required=True,
+        help="Training-manifest CSV created by suite.",
+    )
+    benchmark_parser.add_argument(
+        "--evaluation-seeds",
+        type=int,
+        nargs="+",
+        default=[11, 22, 33, 44, 55],
+        help="Independent evaluation seeds.",
+    )
+    benchmark_parser.add_argument(
+        "--games-per-seat",
+        type=int,
+        default=2000,
+        help="Games played from each seat.",
+    )
+    benchmark_parser.add_argument(
+        "--raw-output",
+        type=Path,
+        required=True,
+        help="Destination for detailed evaluation results.",
+    )
+    benchmark_parser.add_argument(
+        "--summary-output",
+        type=Path,
+        required=True,
+        help="Destination for summarized results.",
+    )
 
     return parser
 
@@ -194,6 +234,18 @@ def run_suite_command(args: argparse.Namespace) -> int:
 
     return 0
 
+def run_benchmark_command(
+    args: argparse.Namespace,
+) -> int:
+    run_baseline_benchmark(
+        manifest_path=args.manifest,
+        evaluation_seeds=args.evaluation_seeds,
+        games_per_seat=args.games_per_seat,
+        raw_output_path=args.raw_output,
+        summary_output_path=args.summary_output,
+    )
+
+    return 0
 
 def main(arguments: Optional[List[str]] = None) -> int:
     parser = build_parser()
@@ -207,6 +259,9 @@ def main(arguments: Optional[List[str]] = None) -> int:
 
     if args.command == "suite":
         return run_suite_command(args)
+
+    if args.command == "benchmark":
+        return run_benchmark_command(args)
 
     parser.error(f"Unknown command: {args.command}")
     return 2

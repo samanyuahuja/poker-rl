@@ -89,6 +89,20 @@ python -m poker_rl evaluate \
   --games-per-seat 10000 \
   --output results/dqn_vs_random.csv
 ```
+Run the complete matched-budget baseline tournament:
+
+```bash
+python -m poker_rl benchmark \
+  --manifest artifacts/baseline_suite.csv \
+  --evaluation-seeds 11 22 33 44 55 \
+  --games-per-seat 2000 \
+  --raw-output results/matched_baseline_raw.csv \
+  --summary-output results/matched_baseline_summary.csv
+```
+
+The benchmark evaluates DQN, NFSP, CFR, and random play through six matchups. Every trained method receives the same wall-clock training budget and is evaluated from both player positions.
+
+The reported 95% confidence intervals measure variation across independently trained agents. Evaluation seeds and both player positions are averaged within each training seed before calculating the interval.
 
 Use `random` as either agent to select the random-policy baseline.
 

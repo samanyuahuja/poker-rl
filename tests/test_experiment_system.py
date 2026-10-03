@@ -1,5 +1,8 @@
 """Tests for the reproducible experiment interface."""
+import csv
+import tempfile
 
+from poker_rl.benchmark import read_training_manifest
 import unittest
 from pathlib import Path
 
@@ -63,6 +66,91 @@ class ConfidenceIntervalTests(unittest.TestCase):
             places=3,
         )
 
+class BenchmarkManifestTests(unittest.TestCase):
+    def write_manifest(self, directory, rows):
+        manifest_path = Path(directory) / "manifest.csv"
+
+        with manifest_path.open(
+            "w",
+            newline="",
+        ) as output_file:
+            writer = csv.DictWriter(
+                output_file,
+                fieldnames=[
+                    "algorithm",
+                    "training_seed",
+                    "budget_seconds",
+                    "run_directory",
+                ],
+            )
+            writer.writeheader()
+            writer.writerows(rows)
+
+        return manifest_path
+
+    def test_accepts_matched_training_runs(self):
+        with tempfile.TemporaryDirectory() as directory:
+            rows = [
+                {
+                    "algorithm": algorithm,
+                    "training_seed": 1,
+                    "budget_seconds": 300,
+                    "run_directory": (
+                        Path(directory) / algorithm
+                    ),
+                }
+                for algorithm in ("dqn", "nfsp", "cfr")
+            ]
+
+            manifest_path = self.write_manifest(
+                directory,
+                rows,
+            )
+
+            runs, seeds, budget = read_training_manifest(
+                manifest_path
+            )
+
+            self.assertEqual(seeds, [1])
+            self.assertEqual(budget, 300)
+            self.assertEqual(len(runs), 3)
+
+    def test_rejects_unequal_training_budgets(self):
+        with tempfile.TemporaryDirectory() as directory:
+            rows = [
+                {
+                    "algorithm": "dqn",
+                    "training_seed": 1,
+                    "budget_seconds": 300,
+                    "run_directory": (
+                        Path(directory) / "dqn"
+                    ),
+                },
+                {
+                    "algorithm": "nfsp",
+                    "training_seed": 1,
+                    "budget_seconds": 300,
+                    "run_directory": (
+                        Path(directory) / "nfsp"
+                    ),
+                },
+                {
+                    "algorithm": "cfr",
+                    "training_seed": 1,
+                    "budget_seconds": 600,
+                    "run_directory": (
+                        Path(directory) / "cfr"
+                    ),
+                },
+            ]
+
+            manifest_path = self.write_manifest(
+                directory,
+                rows,
+            )
+
+            with self.assertRaises(ValueError):
+                read_training_manifest(manifest_path)
 
 class CommandLineTests(unittest.TestCase):
     def setUp(self):
@@ -113,7 +201,7 @@ class CommandLineTests(unittest.TestCase):
             args.seeds,
             [11, 22, 33, 44, 55],
         )
-        
+
     def test_suite_command(self):
         args = self.parser.parse_args(
             [
@@ -144,6 +232,34 @@ class CommandLineTests(unittest.TestCase):
             args.output,
             Path("results/training_manifest.csv"),
         )
+    def test_benchmark_command(self):
+        args = self.parser.parse_args(
+            [
+                "benchmark",
+                "--manifest",
+                "artifacts/suite.csv",
+                "--evaluation-seeds",
+                "11",
+                "22",
+                "--games-per-seat",
+                "1000",
+                "--raw-output",
+                "results/raw.csv",
+                "--summary-output",
+                "results/summary.csv",
+            ]
+        )
+
+        self.assertEqual(args.command, "benchmark")
+        self.assertEqual(
+            args.manifest,
+            Path("artifacts/suite.csv"),
+        )
+        self.assertEqual(
+            args.evaluation_seeds,
+            [11, 22],
+        )
+        self.assertEqual(args.games_per_seat, 1000)
 
 
 if __name__ == "__main__":
