@@ -137,7 +137,7 @@ python play.py
 - [x] GitHub setup and project hygiene
 - [x] Reproducible training and evaluation commands
 - [x] Equal-budget DQN, NFSP, CFR, and random baselines
-- [ ] Research question and literature review
+- [x] Research question and literature review
 - [ ] Adaptive opponent-pool method
 - [ ] Rigorous proposed-method experiments
 - [ ] Ablation studies
@@ -147,4 +147,4 @@ python play.py
 
 ## Limitations
 
-The current agents play simplified Leduc Hold'em rather than full Texas Hold'em. Head-to-head payoff and performance against random opponents do not establish optimal play. Exploitability, adaptive opponent-pool training, and ablation studies remain future stages. See [RESULTS.md](RESULTS.md) for detailed experimental limitations.
+The current agents play simplified Leduc Hold'em rather than full Texas Hold'em. Head-to-head payoff and performance against random opponents do not establish optimal play. Exploitability, adaptive opponent-pool training, and ablation studies remain future stages. See [RESULTS.md](RESULTS.md) for detailed experimental limitations. See [RESEARCH_PLAN.md](RESEARCH_PLAN.md) for the literature positioning, proposed uncertainty-aware method, hypotheses, and experimental protocol.
