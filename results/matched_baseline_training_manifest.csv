@@ -1,0 +1,16 @@
+algorithm,training_seed,budget_seconds,completed_units,unit_name,training_elapsed_seconds,run_directory,action
+dqn,1,300.0,86290,episode,300.00280820800003,artifacts/baseline-dqn-seed1-budget300s,trained
+nfsp,1,300.0,51701,episode,300.00802833299997,artifacts/baseline-nfsp-seed1-budget300s,trained
+cfr,1,300.0,48155,iteration,300.0011222500001,artifacts/baseline-cfr-seed1-budget300s,trained
+dqn,2,300.0,86257,episode,300.00374787500004,artifacts/baseline-dqn-seed2-budget300s,trained
+nfsp,2,300.0,49194,episode,300.0061432499999,artifacts/baseline-nfsp-seed2-budget300s,trained
+cfr,2,300.0,48169,iteration,300.00596979199986,artifacts/baseline-cfr-seed2-budget300s,trained
+dqn,3,300.0,89036,episode,300.00060337499986,artifacts/baseline-dqn-seed3-budget300s,trained
+nfsp,3,300.0,50033,episode,300.0033827090001,artifacts/baseline-nfsp-seed3-budget300s,trained
+cfr,3,300.0,48888,iteration,300.00594762499986,artifacts/baseline-cfr-seed3-budget300s,trained
+dqn,4,300.0,85951,episode,300.0001310839998,artifacts/baseline-dqn-seed4-budget300s,trained
+nfsp,4,300.0,51650,episode,300.00747112499994,artifacts/baseline-nfsp-seed4-budget300s,trained
+cfr,4,300.0,48519,iteration,300.00588712499984,artifacts/baseline-cfr-seed4-budget300s,trained
+dqn,5,300.0,88660,episode,300.00298437499987,artifacts/baseline-dqn-seed5-budget300s,trained
+nfsp,5,300.0,49164,episode,300.005553042,artifacts/baseline-nfsp-seed5-budget300s,trained
+cfr,5,300.0,48843,iteration,300.003034458,artifacts/baseline-cfr-seed5-budget300s,trained

@@ -1,43 +1,43 @@
 # Poker Reinforcement Learning
 
-A reinforcement-learning project for studying decision-making in imperfect-information games using Leduc Hold'em.
+A reproducible reinforcement-learning research project for studying decision-making in imperfect-information games using two-player Leduc Hold'em.
 
-The project compares a Deep Q-Network (DQN) trained against a random opponent with Neural Fictitious Self-Play (NFSP) agents trained against each other.
+The project trains and compares Deep Q-Network (DQN), Neural Fictitious Self-Play (NFSP), Counterfactual Regret Minimization (CFR), and random-policy agents.
 
 ## Current Results
 
-| Experiment | Average payoff |
-|---|---:|
-| DQN vs random, first seat | +1.3128 |
-| DQN vs random, second seat | +1.3568 |
-| DQN vs random, both seats | +1.3348 |
-| NFSP player 0 vs random | +0.6480 |
-| NFSP player 1 vs random | +0.7002 |
-| DQN vs initial NFSP | approximately +0.55 |
+The primary experiment gave DQN, NFSP, and CFR the same 300-second training budget across five independent training seeds. Each matchup used five evaluation seeds, both player positions, and 100,000 total games.
 
-Positive payoff means the listed agent won chips on average.
+| First agent | Opponent | Mean payoff | 95% CI |
+|---|---|---:|---:|
+| DQN | Random | +0.8839 | ±0.0436 |
+| NFSP | Random | +0.5176 | ±0.0144 |
+| CFR | Random | +0.7530 | ±0.0445 |
+| DQN | NFSP | +0.4726 | ±0.0573 |
+| DQN | CFR | -0.0683 | ±0.0704 |
+| NFSP | CFR | -0.4474 | ±0.0506 |
 
-These are fixed-checkpoint evaluation results. The intervals measure evaluation-seed variation, not retraining variance, and exploitability has not yet been measured.
+Positive payoff favors the first listed agent.
 
-![Baseline evaluation results](results/baseline_summary.png)
+DQN and CFR both clearly defeated NFSP. DQN extracted the most payoff from random play. CFR had a small average advantage over DQN, but the DQN-versus-CFR confidence interval includes zero, so the experiment does not establish a reliable winner between them.
 
-See [RESULTS.md](RESULTS.md) for the complete methodology, numerical results, and limitations.
+The experiment covers 15 independently trained models and 600,000 evaluation games. Confidence intervals measure variation across training seeds rather than repeated evaluation of one fixed checkpoint.
 
-### Head-to-Head Comparison
-
-![Head-to-head payoff matrix](results/head_to_head_matrix.png)
-
-Positive cells favor the row agent. CFR defeated DQN and NFSP despite earning less than DQN against random play, demonstrating the difference between exploiting weak opponents and learning a robust strategy.
+See [RESULTS.md](RESULTS.md) for the complete methodology, interpretation, raw-data references, and limitations.
 
 ## Features
 
-- Leduc Hold'em simulation through RLCard
-- DQN training against random play
-- NFSP self-play training
+- Two-player Leduc Hold'em simulation through RLCard
+- DQN and NFSP self-play training
+- CFR game-theoretic baseline
+- Equal wall-clock training budgets across algorithms
+- Multi-seed training and evaluation suites
 - Evaluation from both player positions
-- Head-to-head model comparison
+- Head-to-head baseline tournament
+- 95% confidence intervals across independent training runs
+- Raw results, summaries, and training manifests saved as CSV
 - Terminal interface for playing against a trained model
-- Local model checkpoints excluded from Git
+- Generated model checkpoints excluded from Git
 
 ## Setup
 
@@ -89,6 +89,7 @@ python -m poker_rl evaluate \
   --games-per-seat 10000 \
   --output results/dqn_vs_random.csv
 ```
+
 Run the complete matched-budget baseline tournament:
 
 ```bash
@@ -133,15 +134,17 @@ python play.py
 
 ## Research Roadmap
 
-- Create a reproducible experiment runner
-- Add CFR as a game-theoretic baseline
-- Run experiments across multiple random seeds
-- Calculate confidence intervals and learning curves
-- Measure exploitability
-- Test adaptive opponent-pool training
-- Conduct ablation studies
-- Produce a paper-style report
+- [x] GitHub setup and project hygiene
+- [x] Reproducible training and evaluation commands
+- [x] Equal-budget DQN, NFSP, CFR, and random baselines
+- [ ] Research question and literature review
+- [ ] Adaptive opponent-pool method
+- [ ] Rigorous proposed-method experiments
+- [ ] Ablation studies
+- [ ] Final analysis and visualizations
+- [ ] Paper-style report
+- [ ] Resume-ready release
 
 ## Limitations
 
-The current agents play simplified Leduc Hold'em rather than full Texas Hold'em. Performance against random opponents does not establish optimal or generally strong poker play. The current results should be treated as an early experimental baseline.
+The current agents play simplified Leduc Hold'em rather than full Texas Hold'em. Head-to-head payoff and performance against random opponents do not establish optimal play. Exploitability, adaptive opponent-pool training, and ablation studies remain future stages. See [RESULTS.md](RESULTS.md) for detailed experimental limitations.
