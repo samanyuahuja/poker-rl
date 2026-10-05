@@ -5,12 +5,13 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 from typing import List, Optional
-
+from poker_rl.benchmark import run_baseline_benchmark
 from poker_rl.config import TrainConfig
 from poker_rl.evaluation import evaluate_matchup
+from poker_rl.pool_config import PoolTrainConfig
+from poker_rl.pool_training import train_with_opponent_pool
 from poker_rl.suite import run_training_suite
 from poker_rl.training import train
-from poker_rl.benchmark import run_baseline_benchmark
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -189,7 +190,88 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
         help="Destination for summarized results.",
     )
+    pool_train_parser = commands.add_parser(
+        "pool-train",
+        help="Train DQN against a historical opponent pool.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
 
+    pool_train_parser.add_argument(
+        "--strategy",
+        choices=[
+            "latest",
+            "uniform",
+            "pfsp",
+            "uncertainty",
+        ],
+        required=True,
+        help="Historical-opponent selection rule.",
+    )
+    pool_train_parser.add_argument(
+        "--seed",
+        type=int,
+        default=42,
+        help="Training random seed.",
+    )
+    pool_train_parser.add_argument(
+        "--budget-seconds",
+        type=float,
+        required=True,
+        help="Total wall-clock training budget.",
+    )
+    pool_train_parser.add_argument(
+        "--checkpoint-seconds",
+        type=float,
+        default=30,
+        help="Seconds between historical checkpoints.",
+    )
+    pool_train_parser.add_argument(
+        "--evaluation-games",
+        type=int,
+        default=100,
+        help="Seat-balanced games per pool opponent.",
+    )
+    pool_train_parser.add_argument(
+        "--max-pool-size",
+        type=int,
+        default=10,
+        help="Maximum active historical opponents.",
+    )
+    pool_train_parser.add_argument(
+        "--beta",
+        type=float,
+        default=1.0,
+        help="Uncertainty-bonus strength.",
+    )
+    pool_train_parser.add_argument(
+        "--epsilon",
+        type=float,
+        default=0.1,
+        help="Uniform sampling mixture.",
+    )
+    pool_train_parser.add_argument(
+        "--temperature",
+        type=float,
+        default=1.0,
+        help="Uncertainty-strategy softmax temperature.",
+    )
+    pool_train_parser.add_argument(
+        "--log-every",
+        type=int,
+        default=1000,
+        help="Episode logging interval.",
+    )
+    pool_train_parser.add_argument(
+        "--max-episodes",
+        type=int,
+        default=None,
+        help="Optional episode limit for smoke tests.",
+    )
+    pool_train_parser.add_argument(
+        "--run-name",
+        default=None,
+        help="Optional artifact directory name.",
+    )
     return parser
 
 
@@ -234,6 +316,7 @@ def run_suite_command(args: argparse.Namespace) -> int:
 
     return 0
 
+
 def run_benchmark_command(
     args: argparse.Namespace,
 ) -> int:
@@ -246,6 +329,31 @@ def run_benchmark_command(
     )
 
     return 0
+
+
+def run_pool_train_command(
+    args: argparse.Namespace,
+) -> int:
+    config = PoolTrainConfig(
+        strategy=args.strategy,
+        seed=args.seed,
+        budget_seconds=args.budget_seconds,
+        checkpoint_seconds=args.checkpoint_seconds,
+        evaluation_games=args.evaluation_games,
+        max_pool_size=args.max_pool_size,
+        beta=args.beta,
+        epsilon=args.epsilon,
+        temperature=args.temperature,
+        log_every=args.log_every,
+        max_episodes=args.max_episodes,
+        run_name=args.run_name,
+    )
+
+    run_directory = train_with_opponent_pool(config)
+
+    print(f"Artifacts saved in: {run_directory}")
+    return 0
+
 
 def main(arguments: Optional[List[str]] = None) -> int:
     parser = build_parser()
@@ -262,6 +370,9 @@ def main(arguments: Optional[List[str]] = None) -> int:
 
     if args.command == "benchmark":
         return run_benchmark_command(args)
+
+    if args.command == "pool-train":
+        return run_pool_train_command(args)
 
     parser.error(f"Unknown command: {args.command}")
     return 2

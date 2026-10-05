@@ -119,6 +119,33 @@ Generated run artifacts and model checkpoints are excluded from Git because they
 
 The comparison budget is wall-clock training time. DQN and NFSP report self-play episodes, while CFR reports iterations, so those unit counts should not be compared directly.
 
+## Historical Opponent-Pool Training
+
+Train DQN against a population of frozen historical checkpoints:
+
+```bash
+python -m poker_rl pool-train \
+  --strategy uncertainty \
+  --seed 1 \
+  --budget-seconds 300 \
+  --checkpoint-seconds 30 \
+  --evaluation-games 100 \
+  --max-pool-size 10 \
+  --beta 1.0 \
+  --epsilon 0.1
+```
+
+Available opponent-selection strategies are:
+
+- `latest`: always train against the newest checkpoint
+- `uniform`: sample every active checkpoint equally
+- `pfsp`: prioritize checkpoints that beat the learner more often
+- `uncertainty`: prioritize measured weaknesses plus an uncertainty bonus
+
+Each run saves final evaluation checkpoints, historical checkpoints, training progress, pool statistics, configuration, environment metadata, and a completion summary. Opponent evaluation and checkpoint management count toward the training-time budget.
+
+The uncertainty-aware method uses a uniform sampling component so every active historical opponent retains a nonzero probability of selection.
+
 ## Legacy Commands
 
 The original standalone scripts remain available for reproducing the early experiments:
@@ -138,7 +165,7 @@ python play.py
 - [x] Reproducible training and evaluation commands
 - [x] Equal-budget DQN, NFSP, CFR, and random baselines
 - [x] Research question and literature review
-- [ ] Adaptive opponent-pool method
+- [x] Adaptive opponent-pool method
 - [ ] Rigorous proposed-method experiments
 - [ ] Ablation studies
 - [ ] Final analysis and visualizations

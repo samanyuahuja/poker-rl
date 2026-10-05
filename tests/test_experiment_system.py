@@ -261,6 +261,36 @@ class CommandLineTests(unittest.TestCase):
         )
         self.assertEqual(args.games_per_seat, 1000)
 
+    def test_pool_train_command(self):
+        args = self.parser.parse_args(
+            [
+                "pool-train",
+                "--strategy",
+                "uncertainty",
+                "--seed",
+                "9",
+                "--budget-seconds",
+                "300",
+                "--checkpoint-seconds",
+                "30",
+                "--evaluation-games",
+                "100",
+                "--max-pool-size",
+                "10",
+            ]
+        )
+
+        self.assertEqual(args.command, "pool-train")
+        self.assertEqual(
+            args.strategy,
+            "uncertainty",
+        )
+        self.assertEqual(args.seed, 9)
+        self.assertEqual(args.budget_seconds, 300)
+        self.assertEqual(args.checkpoint_seconds, 30)
+        self.assertEqual(args.evaluation_games, 100)
+        self.assertEqual(args.max_pool_size, 10)
+
 
 if __name__ == "__main__":
     unittest.main()
