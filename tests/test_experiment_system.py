@@ -290,7 +290,65 @@ class CommandLineTests(unittest.TestCase):
         self.assertEqual(args.checkpoint_seconds, 30)
         self.assertEqual(args.evaluation_games, 100)
         self.assertEqual(args.max_pool_size, 10)
+    def test_pool_suite_command(self):
+        args = self.parser.parse_args(
+            [
+                "pool-suite",
+                "--strategies",
+                "latest",
+                "uniform",
+                "pfsp",
+                "uncertainty",
+                "--seeds",
+                "1",
+                "2",
+                "--budget-seconds",
+                "300",
+                "--checkpoint-seconds",
+                "30",
+                "--evaluation-games",
+                "100",
+                "--max-pool-size",
+                "10",
+                "--output",
+                "results/pool_suite.csv",
+            ]
+        )
 
+        self.assertEqual(
+            args.command,
+            "pool-suite",
+        )
+        self.assertEqual(
+            args.strategies,
+            [
+                "latest",
+                "uniform",
+                "pfsp",
+                "uncertainty",
+            ],
+        )
+        self.assertEqual(args.seeds, [1, 2])
+        self.assertEqual(
+            args.budget_seconds,
+            300,
+        )
+        self.assertEqual(
+            args.checkpoint_seconds,
+            30,
+        )
+        self.assertEqual(
+            args.evaluation_games,
+            100,
+        )
+        self.assertEqual(
+            args.max_pool_size,
+            10,
+        )
+        self.assertEqual(
+            args.output,
+            Path("results/pool_suite.csv"),
+        )
 
 if __name__ == "__main__":
     unittest.main()

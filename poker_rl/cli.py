@@ -12,7 +12,7 @@ from poker_rl.pool_config import PoolTrainConfig
 from poker_rl.pool_training import train_with_opponent_pool
 from poker_rl.suite import run_training_suite
 from poker_rl.training import train
-
+from poker_rl.pool_suite import run_pool_training_suite
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
@@ -272,6 +272,93 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
         help="Optional artifact directory name.",
     )
+    pool_suite_parser = commands.add_parser(
+        "pool-suite",
+        help=(
+            "Train historical opponent-pool strategies "
+            "using matched wall-clock budgets."
+        ),
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+
+    pool_suite_parser.add_argument(
+        "--strategies",
+        nargs="+",
+        choices=[
+            "latest",
+            "uniform",
+            "pfsp",
+            "uncertainty",
+        ],
+        default=[
+            "latest",
+            "uniform",
+            "pfsp",
+            "uncertainty",
+        ],
+        help="Opponent-selection strategies.",
+    )
+    pool_suite_parser.add_argument(
+        "--seeds",
+        type=int,
+        nargs="+",
+        default=[1, 2, 3, 4, 5],
+        help="Independent training seeds.",
+    )
+    pool_suite_parser.add_argument(
+        "--budget-seconds",
+        type=float,
+        required=True,
+        help="Training time given to every run.",
+    )
+    pool_suite_parser.add_argument(
+        "--checkpoint-seconds",
+        type=float,
+        default=30,
+        help="Seconds between historical checkpoints.",
+    )
+    pool_suite_parser.add_argument(
+        "--evaluation-games",
+        type=int,
+        default=100,
+        help="Seat-balanced games per pool opponent.",
+    )
+    pool_suite_parser.add_argument(
+        "--max-pool-size",
+        type=int,
+        default=10,
+        help="Maximum active historical opponents.",
+    )
+    pool_suite_parser.add_argument(
+        "--beta",
+        type=float,
+        default=1.0,
+        help="Uncertainty-bonus strength.",
+    )
+    pool_suite_parser.add_argument(
+        "--epsilon",
+        type=float,
+        default=0.1,
+        help="Uniform sampling mixture.",
+    )
+    pool_suite_parser.add_argument(
+        "--temperature",
+        type=float,
+        default=1.0,
+        help="Uncertainty softmax temperature.",
+    )
+    pool_suite_parser.add_argument(
+        "--log-every",
+        type=int,
+        default=1000,
+        help="Episode logging interval.",
+    )
+    pool_suite_parser.add_argument(
+        "--output",
+        type=Path,
+        required=True,
+        help="Destination training-manifest CSV.",
+    )
     return parser
 
 
@@ -355,6 +442,26 @@ def run_pool_train_command(
     return 0
 
 
+def run_pool_suite_command(
+    args: argparse.Namespace,
+) -> int:
+    run_pool_training_suite(
+        strategies=args.strategies,
+        seeds=args.seeds,
+        budget_seconds=args.budget_seconds,
+        checkpoint_seconds=args.checkpoint_seconds,
+        evaluation_games=args.evaluation_games,
+        max_pool_size=args.max_pool_size,
+        beta=args.beta,
+        epsilon=args.epsilon,
+        temperature=args.temperature,
+        log_every=args.log_every,
+        output_path=args.output,
+    )
+
+    return 0
+
+
 def main(arguments: Optional[List[str]] = None) -> int:
     parser = build_parser()
     args = parser.parse_args(arguments)
@@ -373,6 +480,9 @@ def main(arguments: Optional[List[str]] = None) -> int:
 
     if args.command == "pool-train":
         return run_pool_train_command(args)
+
+    if args.command == "pool-suite":
+        return run_pool_suite_command(args)
 
     parser.error(f"Unknown command: {args.command}")
     return 2

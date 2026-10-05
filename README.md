@@ -146,6 +146,28 @@ Each run saves final evaluation checkpoints, historical checkpoints, training pr
 
 The uncertainty-aware method uses a uniform sampling component so every active historical opponent retains a nonzero probability of selection.
 
+### Matched-Budget Opponent-Pool Suite
+
+Train every opponent-selection strategy across identical seeds and wall-clock budgets:
+
+```bash
+python -m poker_rl pool-suite \
+  --strategies latest uniform pfsp uncertainty \
+  --seeds 1 2 3 4 5 \
+  --budget-seconds 300 \
+  --checkpoint-seconds 30 \
+  --evaluation-games 100 \
+  --max-pool-size 10 \
+  --beta 1.0 \
+  --epsilon 0.1 \
+  --temperature 1.0 \
+  --output artifacts/pool_training_manifest.csv
+```
+
+This command runs 20 matched-budget experiments: four strategies across five independent training seeds. Completed runs with exactly matching configurations are reused safely. Incomplete or mismatched runs are rejected instead of silently contaminating the experiment.
+
+The generated manifest records each strategy, seed, training budget, completed episodes, checkpoint count, pool size, artifact directory, and whether the run was newly trained or reused.
+
 ## Legacy Commands
 
 The original standalone scripts remain available for reproducing the early experiments:
