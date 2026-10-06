@@ -168,6 +168,25 @@ This command runs 20 matched-budget experiments: four strategies across five ind
 
 The generated manifest records each strategy, seed, training budget, completed episodes, checkpoint count, pool size, artifact directory, and whether the run was newly trained or reused.
 
+### Opponent-Pool Benchmark
+
+Evaluate the four opponent-pool strategies against the matched-budget baselines and each other:
+
+```bash
+python -m poker_rl pool-benchmark \
+  --pool-manifest artifacts/pool_training_manifest.csv \
+  --baseline-manifest results/matched_baseline_training_manifest.csv \
+  --evaluation-seeds 11 22 33 44 55 \
+  --games-per-seat 2000 \
+  --raw-output results/pool_benchmark_raw.csv \
+  --summary-output results/pool_benchmark_summary.csv \
+  --aggregate-output results/pool_benchmark_aggregate.csv
+```
+
+The benchmark evaluates every final policy from both player positions. It compares each pool strategy against random, DQN, NFSP, and CFR reference agents and evaluates every pair of pool strategies.
+
+Confidence intervals are calculated across the five independent training seeds. Aggregate output includes mean payoff and worst-case payoff against the fixed reference population. These metrics are robustness measurements and should not be described as exact exploitability.
+
 ## Legacy Commands
 
 The original standalone scripts remain available for reproducing the early experiments:

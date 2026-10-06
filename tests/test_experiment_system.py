@@ -350,5 +350,60 @@ class CommandLineTests(unittest.TestCase):
             Path("results/pool_suite.csv"),
         )
 
+    def test_pool_benchmark_command(self):
+        args = self.parser.parse_args(
+            [
+                "pool-benchmark",
+                "--pool-manifest",
+                "artifacts/pool.csv",
+                "--baseline-manifest",
+                "results/baseline.csv",
+                "--evaluation-seeds",
+                "11",
+                "22",
+                "--games-per-seat",
+                "2000",
+                "--raw-output",
+                "results/pool_raw.csv",
+                "--summary-output",
+                "results/pool_summary.csv",
+                "--aggregate-output",
+                "results/pool_aggregate.csv",
+            ]
+        )
+
+        self.assertEqual(
+            args.command,
+            "pool-benchmark",
+        )
+        self.assertEqual(
+            args.pool_manifest,
+            Path("artifacts/pool.csv"),
+        )
+        self.assertEqual(
+            args.baseline_manifest,
+            Path("results/baseline.csv"),
+        )
+        self.assertEqual(
+            args.evaluation_seeds,
+            [11, 22],
+        )
+        self.assertEqual(
+            args.games_per_seat,
+            2000,
+        )
+        self.assertEqual(
+            args.raw_output,
+            Path("results/pool_raw.csv"),
+        )
+        self.assertEqual(
+            args.summary_output,
+            Path("results/pool_summary.csv"),
+        )
+        self.assertEqual(
+            args.aggregate_output,
+            Path("results/pool_aggregate.csv"),
+        )
+
 if __name__ == "__main__":
     unittest.main()

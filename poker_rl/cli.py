@@ -13,6 +13,7 @@ from poker_rl.pool_training import train_with_opponent_pool
 from poker_rl.suite import run_training_suite
 from poker_rl.training import train
 from poker_rl.pool_suite import run_pool_training_suite
+from poker_rl.pool_benchmark import run_pool_benchmark
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
@@ -359,6 +360,58 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
         help="Destination training-manifest CSV.",
     )
+    pool_benchmark_parser = commands.add_parser(
+        "pool-benchmark",
+        help=(
+            "Evaluate opponent-pool strategies "
+            "against baselines and each other."
+        ),
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+
+    pool_benchmark_parser.add_argument(
+        "--pool-manifest",
+        type=Path,
+        required=True,
+        help="Manifest created by pool-suite.",
+    )
+    pool_benchmark_parser.add_argument(
+        "--baseline-manifest",
+        type=Path,
+        required=True,
+        help="Matched-budget baseline manifest.",
+    )
+    pool_benchmark_parser.add_argument(
+        "--evaluation-seeds",
+        type=int,
+        nargs="+",
+        default=[11, 22, 33, 44, 55],
+        help="Independent evaluation seeds.",
+    )
+    pool_benchmark_parser.add_argument(
+        "--games-per-seat",
+        type=int,
+        default=2000,
+        help="Games played from each player position.",
+    )
+    pool_benchmark_parser.add_argument(
+        "--raw-output",
+        type=Path,
+        required=True,
+        help="Detailed evaluation CSV.",
+    )
+    pool_benchmark_parser.add_argument(
+        "--summary-output",
+        type=Path,
+        required=True,
+        help="Matchup-summary CSV.",
+    )
+    pool_benchmark_parser.add_argument(
+        "--aggregate-output",
+        type=Path,
+        required=True,
+        help="Aggregate research-metrics CSV.",
+    )
     return parser
 
 
@@ -462,6 +515,34 @@ def run_pool_suite_command(
     return 0
 
 
+def run_pool_benchmark_command(
+    args: argparse.Namespace,
+) -> int:
+    run_pool_benchmark(
+        pool_manifest_path=(
+            args.pool_manifest
+        ),
+        baseline_manifest_path=(
+            args.baseline_manifest
+        ),
+        evaluation_seeds=(
+            args.evaluation_seeds
+        ),
+        games_per_seat=(
+            args.games_per_seat
+        ),
+        raw_output_path=args.raw_output,
+        summary_output_path=(
+            args.summary_output
+        ),
+        aggregate_output_path=(
+            args.aggregate_output
+        ),
+    )
+
+    return 0
+
+
 def main(arguments: Optional[List[str]] = None) -> int:
     parser = build_parser()
     args = parser.parse_args(arguments)
@@ -483,6 +564,9 @@ def main(arguments: Optional[List[str]] = None) -> int:
 
     if args.command == "pool-suite":
         return run_pool_suite_command(args)
+
+    if args.command == "pool-benchmark":
+        return run_pool_benchmark_command(args)
 
     parser.error(f"Unknown command: {args.command}")
     return 2
