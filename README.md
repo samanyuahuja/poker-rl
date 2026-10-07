@@ -197,6 +197,28 @@ python -m poker_rl pool-analyze \
 
 The paired analysis averages evaluation seeds within each training seed before comparing strategies. This preserves the five independent training runs as the statistical sample.
 
+### Ablation Training
+
+Run the exploratory uncertainty-strength and pool-size ablations:
+
+```bash
+caffeinate -i python -m poker_rl ablation-suite \
+  --labels beta-0 beta-2 pool-5 pool-10 pool-20 \
+  --seeds 1 2 3 4 5 \
+  --budget-seconds 300 \
+  --evaluation-games 100 \
+  --epsilon 0.1 \
+  --temperature 1.0 \
+  --log-every 1000 \
+  --output artifacts/ablation_training_manifest.csv
+```
+
+The uncertainty-strength family compares `beta=0`, the existing default `beta=1`, and `beta=2` with pool size 10 and 30-second checkpoints.
+
+The pool-size family compares pool sizes 5, 10, and 20 with `beta=1` and 10-second checkpoints. The shorter interval creates enough historical checkpoints for pool sizes 10 and 20 to differ.
+
+The existing latest-only runs serve as the no-historical-selection comparison. Ablations are exploratory follow-up analyses and are reported separately from the primary experiment.
+
 ## Legacy Commands
 
 The original standalone scripts remain available for reproducing the early experiments:

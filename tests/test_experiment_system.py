@@ -435,5 +435,61 @@ class CommandLineTests(unittest.TestCase):
             ),
         )
 
+    def test_ablation_suite_command(self):
+        args = self.parser.parse_args(
+            [
+                "ablation-suite",
+                "--labels",
+                "beta-0",
+                "beta-2",
+                "pool-5",
+                "pool-10",
+                "pool-20",
+                "--seeds",
+                "1",
+                "2",
+                "--budget-seconds",
+                "300",
+                "--evaluation-games",
+                "100",
+                "--output",
+                "artifacts/ablation_manifest.csv",
+            ]
+        )
+
+        self.assertEqual(
+            args.command,
+            "ablation-suite",
+        )
+        self.assertEqual(
+            args.labels,
+            [
+                "beta-0",
+                "beta-2",
+                "pool-5",
+                "pool-10",
+                "pool-20",
+            ],
+        )
+        self.assertEqual(
+            args.seeds,
+            [1, 2],
+        )
+        self.assertEqual(
+            args.budget_seconds,
+            300,
+        )
+        self.assertEqual(
+            args.evaluation_games,
+            100,
+        )
+        self.assertEqual(
+            args.output,
+            Path(
+                "artifacts/"
+                "ablation_manifest.csv"
+            ),
+        )
+
 if __name__ == "__main__":
     unittest.main()

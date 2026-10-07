@@ -15,6 +15,10 @@ from poker_rl.training import train
 from poker_rl.pool_suite import run_pool_training_suite
 from poker_rl.pool_benchmark import run_pool_benchmark
 from poker_rl.pool_analysis import run_paired_analysis
+from poker_rl.ablation_suite import (
+    ABLATION_BY_LABEL,
+    run_ablation_suite,
+)
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
@@ -434,6 +438,69 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
         help="Paired-comparison CSV.",
     )
+    ablation_suite_parser = commands.add_parser(
+        "ablation-suite",
+        help=(
+            "Train the uncertainty-strength and "
+            "pool-size ablation experiments."
+        ),
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+
+    ablation_suite_parser.add_argument(
+        "--labels",
+        nargs="+",
+        choices=sorted(
+            ABLATION_BY_LABEL
+        ),
+        default=list(
+            ABLATION_BY_LABEL
+        ),
+        help="Ablation configurations to train.",
+    )
+    ablation_suite_parser.add_argument(
+        "--seeds",
+        type=int,
+        nargs="+",
+        default=[1, 2, 3, 4, 5],
+        help="Independent training seeds.",
+    )
+    ablation_suite_parser.add_argument(
+        "--budget-seconds",
+        type=float,
+        required=True,
+        help="Training time given to every run.",
+    )
+    ablation_suite_parser.add_argument(
+        "--evaluation-games",
+        type=int,
+        default=100,
+        help="Seat-balanced games per pool opponent.",
+    )
+    ablation_suite_parser.add_argument(
+        "--epsilon",
+        type=float,
+        default=0.1,
+        help="Uniform sampling mixture.",
+    )
+    ablation_suite_parser.add_argument(
+        "--temperature",
+        type=float,
+        default=1.0,
+        help="Selection softmax temperature.",
+    )
+    ablation_suite_parser.add_argument(
+        "--log-every",
+        type=int,
+        default=1000,
+        help="Episode logging interval.",
+    )
+    ablation_suite_parser.add_argument(
+        "--output",
+        type=Path,
+        required=True,
+        help="Destination ablation-manifest CSV.",
+    )
     return parser
 
 
@@ -576,6 +643,27 @@ def run_pool_analyze_command(
     return 0
 
 
+def run_ablation_suite_command(
+    args: argparse.Namespace,
+) -> int:
+    run_ablation_suite(
+        labels=args.labels,
+        seeds=args.seeds,
+        budget_seconds=(
+            args.budget_seconds
+        ),
+        evaluation_games=(
+            args.evaluation_games
+        ),
+        epsilon=args.epsilon,
+        temperature=args.temperature,
+        log_every=args.log_every,
+        output_path=args.output,
+    )
+
+    return 0
+
+
 def main(arguments: Optional[List[str]] = None) -> int:
     parser = build_parser()
     args = parser.parse_args(arguments)
@@ -603,6 +691,9 @@ def main(arguments: Optional[List[str]] = None) -> int:
 
     if args.command == "pool-analyze":
         return run_pool_analyze_command(args)
+
+    if args.command == "ablation-suite":
+        return run_ablation_suite_command(args)
 
     parser.error(f"Unknown command: {args.command}")
     return 2
