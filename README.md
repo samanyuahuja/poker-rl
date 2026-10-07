@@ -187,6 +187,16 @@ The benchmark evaluates every final policy from both player positions. It compar
 
 Confidence intervals are calculated across the five independent training seeds. Aggregate output includes mean payoff and worst-case payoff against the fixed reference population. These metrics are robustness measurements and should not be described as exact exploitability.
 
+Calculate paired seed-by-seed comparisons from the raw benchmark:
+
+```bash
+python -m poker_rl pool-analyze \
+  --raw-input results/pool_benchmark_raw.csv \
+  --output results/pool_benchmark_paired.csv
+```
+
+The paired analysis averages evaluation seeds within each training seed before comparing strategies. This preserves the five independent training runs as the statistical sample.
+
 ## Legacy Commands
 
 The original standalone scripts remain available for reproducing the early experiments:
@@ -207,7 +217,7 @@ python play.py
 - [x] Equal-budget DQN, NFSP, CFR, and random baselines
 - [x] Research question and literature review
 - [x] Adaptive opponent-pool method
-- [ ] Rigorous proposed-method experiments
+- [x] Rigorous proposed-method experiments
 - [ ] Ablation studies
 - [ ] Final analysis and visualizations
 - [ ] Paper-style report
@@ -215,4 +225,4 @@ python play.py
 
 ## Limitations
 
-The current agents play simplified Leduc Hold'em rather than full Texas Hold'em. Head-to-head payoff and performance against random opponents do not establish optimal play. Exploitability, adaptive opponent-pool training, and ablation studies remain future stages. See [RESULTS.md](RESULTS.md) for detailed experimental limitations. See [RESEARCH_PLAN.md](RESEARCH_PLAN.md) for the literature positioning, proposed uncertainty-aware method, hypotheses, and experimental protocol.
+The current agents play simplified Leduc Hold'em rather than full Texas Hold'em. Head-to-head payoff and performance against random opponents do not establish optimal play. Exact exploitability measurement and ablation studies remain future stages. See [RESULTS.md](RESULTS.md) for detailed experimental limitations. See [RESEARCH_PLAN.md](RESEARCH_PLAN.md) for the literature positioning, proposed uncertainty-aware method, hypotheses, and experimental protocol.

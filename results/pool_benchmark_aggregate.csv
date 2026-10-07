@@ -1,0 +1,9 @@
+strategy,metric,reference_agents,training_seed_count,mean_payoff,confidence_interval_95,worst_opponent
+latest,reference_mean_payoff,random|dqn|nfsp|cfr,5,0.0934675,0.2196549535579818,
+latest,reference_worst_case_payoff,random|dqn|nfsp|cfr,5,-0.46756,0.2873142906427412,dqn
+uniform,reference_mean_payoff,random|dqn|nfsp|cfr,5,0.32256,0.0929223567656129,
+uniform,reference_worst_case_payoff,random|dqn|nfsp|cfr,5,-0.31075,0.3583412378104033,dqn
+pfsp,reference_mean_payoff,random|dqn|nfsp|cfr,5,0.318025,0.07656767046066669,
+pfsp,reference_worst_case_payoff,random|dqn|nfsp|cfr,5,-0.17492,0.15510180893755687,dqn
+uncertainty,reference_mean_payoff,random|dqn|nfsp|cfr,5,0.24168625,0.08739722259446892,
+uncertainty,reference_worst_case_payoff,random|dqn|nfsp|cfr,5,-0.221195,0.17230925496775382,cfr

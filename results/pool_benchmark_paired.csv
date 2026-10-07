@@ -1,0 +1,13 @@
+metric,agent_a,agent_b,difference_definition,training_seed_count,evaluation_seed_count,mean_difference,confidence_interval_95,lower_bound_95,upper_bound_95,conclusion
+reference_mean_payoff,latest,uniform,agent_a_minus_agent_b,5,5,-0.22909250000000003,0.1984344334298124,-0.4275269334298124,-0.03065806657018763,agent_b_higher
+reference_mean_payoff,latest,pfsp,agent_a_minus_agent_b,5,5,-0.22455750000000002,0.2899685272484944,-0.5145260272484944,0.0654110272484944,inconclusive
+reference_mean_payoff,latest,uncertainty,agent_a_minus_agent_b,5,5,-0.14821875,0.21770677542395178,-0.3659255254239518,0.06948802542395177,inconclusive
+reference_mean_payoff,uniform,pfsp,agent_a_minus_agent_b,5,5,0.004534999999999995,0.1526220416357262,-0.14808704163572622,0.1571570416357262,inconclusive
+reference_mean_payoff,uniform,uncertainty,agent_a_minus_agent_b,5,5,0.08087375000000002,0.06399035161767476,0.016883398382325263,0.14486410161767477,agent_a_higher
+reference_mean_payoff,pfsp,uncertainty,agent_a_minus_agent_b,5,5,0.07633875000000002,0.14569329234661216,-0.06935454234661213,0.22203204234661217,inconclusive
+reference_worst_case_payoff,latest,uniform,agent_a_minus_agent_b,5,5,-0.15680999999999998,0.3083012414846648,-0.46511124148466476,0.15149124148466483,inconclusive
+reference_worst_case_payoff,latest,pfsp,agent_a_minus_agent_b,5,5,-0.29264,0.39115542984253904,-0.683795429842539,0.09851542984253903,inconclusive
+reference_worst_case_payoff,latest,uncertainty,agent_a_minus_agent_b,5,5,-0.246365,0.37388633742243854,-0.6202513374224385,0.12752133742243854,inconclusive
+reference_worst_case_payoff,uniform,pfsp,agent_a_minus_agent_b,5,5,-0.13583,0.4510082894678925,-0.5868382894678925,0.3151782894678925,inconclusive
+reference_worst_case_payoff,uniform,uncertainty,agent_a_minus_agent_b,5,5,-0.08955500000000002,0.33418270095641156,-0.4237377009564116,0.24462770095641154,inconclusive
+reference_worst_case_payoff,pfsp,uncertainty,agent_a_minus_agent_b,5,5,0.04627500000000001,0.21348526998333164,-0.16721026998333163,0.2597602699833317,inconclusive

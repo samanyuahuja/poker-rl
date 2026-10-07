@@ -405,5 +405,35 @@ class CommandLineTests(unittest.TestCase):
             Path("results/pool_aggregate.csv"),
         )
 
+    def test_pool_analyze_command(self):
+        args = self.parser.parse_args(
+            [
+                "pool-analyze",
+                "--raw-input",
+                "results/pool_benchmark_raw.csv",
+                "--output",
+                "results/pool_benchmark_paired.csv",
+            ]
+        )
+
+        self.assertEqual(
+            args.command,
+            "pool-analyze",
+        )
+        self.assertEqual(
+            args.raw_input,
+            Path(
+                "results/"
+                "pool_benchmark_raw.csv"
+            ),
+        )
+        self.assertEqual(
+            args.output,
+            Path(
+                "results/"
+                "pool_benchmark_paired.csv"
+            ),
+        )
+
 if __name__ == "__main__":
     unittest.main()

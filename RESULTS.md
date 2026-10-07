@@ -69,6 +69,133 @@ The results show that performance against random play and head-to-head strength 
 - `results/matched_baseline_summary.csv` contains the six final matchup estimates and confidence intervals.
 - Training checkpoints and generated artifacts are excluded from Git because they can be recreated through the documented commands.
 
+## Matched-Budget Opponent-Pool Experiment
+
+This experiment compares four historical self-play strategies using the same DQN architecture and training implementation:
+
+1. Latest-only checkpoint selection
+2. Uniform historical checkpoint sampling
+3. Standard PFSP
+4. Uncertainty-aware PFSP
+
+### Experimental Design
+
+Every strategy received:
+
+- Five independent training seeds: 1, 2, 3, 4, and 5
+- 300 seconds of wall-clock training per seed
+- A checkpoint interval of 30 seconds
+- A maximum pool size of 10
+- 100 evaluation games per historical opponent
+- Opponent evaluation and selection overhead included in the training budget
+- Training code from Git commit `5a93418`
+
+The complete study contains 20 training runs. Every run completed successfully and saved 10 checkpoints.
+
+| Strategy | Mean episodes | Episode range |
+|---|---:|---:|
+| Latest | 143,997 | 129,299–167,560 |
+| Uniform | 152,779 | 130,844–212,974 |
+| PFSP | 148,060 | 134,742–191,341 |
+| Uncertainty | 147,776 | 138,330–172,903 |
+
+The controlled resource was wall-clock time. Episode counts are reported to expose differences in training throughput.
+
+Each final policy was evaluated:
+
+- Against random, DQN, NFSP, and CFR reference agents
+- Against each of the other opponent-pool strategies
+- Across five evaluation seeds: 11, 22, 33, 44, and 55
+- From both player positions
+- With 2,000 games per player position
+- Using matched training seeds for trained opponents
+
+The evaluation contains 22 matchup types, 550 training-seed and evaluation-seed observations, and 2.2 million games.
+
+### Aggregate Reference Results
+
+Reference mean payoff averages performance against random, DQN, NFSP, and CFR. Worst-case payoff first selects the weakest reference result within each training seed and then calculates the mean and confidence interval across training seeds.
+
+| Strategy | Mean reference payoff | Worst-case reference payoff |
+|---|---:|---:|
+| Latest | +0.0935 ± 0.2197 | -0.4676 ± 0.2873 |
+| Uniform | **+0.3226 ± 0.0929** | -0.3108 ± 0.3583 |
+| PFSP | +0.3180 ± 0.0766 | **-0.1749 ± 0.1551** |
+| Uncertainty | +0.2417 ± 0.0874 | -0.2212 ± 0.1723 |
+
+Uniform sampling produced the highest mean payoff against the fixed reference population. PFSP produced the strongest worst-case point estimate.
+
+### Head-to-Head Results
+
+Payoff is reported for the first listed strategy.
+
+| First strategy | Opponent | Mean payoff | 95% CI |
+|---|---|---:|---:|
+| Latest | Uniform | -0.3796 | ±0.3918 |
+| Latest | PFSP | -0.2965 | ±0.5694 |
+| Latest | Uncertainty | -0.3844 | ±0.7042 |
+| Uniform | PFSP | -0.1448 | ±0.3349 |
+| Uniform | Uncertainty | +0.1507 | ±0.5333 |
+| PFSP | Uncertainty | +0.2608 | ±0.3769 |
+
+Every head-to-head interval includes zero. The evaluation therefore does not establish a reliable direct winner in any pairwise matchup.
+
+### Paired Comparisons
+
+Paired comparisons first average evaluation seeds within each training seed. Differences are then calculated between strategies using the same training seed, and the 95% confidence interval is calculated across the five paired differences.
+
+Uniform had a higher mean reference payoff than latest:
+
+```text
+latest minus uniform = -0.2291 ± 0.1984
+```
+
+Uniform also had a higher mean reference payoff than uncertainty:
+
+```text
+uniform minus uncertainty = +0.0809 ± 0.0640
+```
+
+Both intervals exclude zero.
+
+The proposed uncertainty method did not improve over PFSP:
+
+```text
+Mean reference payoff:
+uncertainty minus PFSP = -0.0763 ± 0.1457
+
+Worst-case reference payoff:
+uncertainty minus PFSP = -0.0463 ± 0.2135
+```
+
+Both uncertainty-versus-PFSP intervals include zero, and both point estimates favor PFSP.
+
+All paired worst-case comparisons between the four strategies include zero.
+
+### Hypothesis Evaluation
+
+- **H1 was not established.** Historical sampling produced better worst-case point estimates than latest-only training, but the paired confidence intervals include zero.
+- **H2 was not established.** PFSP had a better worst-case point estimate than uniform sampling, but the paired difference was inconclusive.
+- **H3 was not supported.** The uncertainty-aware method did not improve mean or worst-case payoff over standard PFSP.
+- **H4 remains untested.** Determining whether uncertainty helps under smaller evaluation budgets or different uncertainty strengths requires ablation experiments.
+
+### Interpretation
+
+The default uncertainty-aware configuration did not outperform the simpler alternatives. Under this budget, uniform sampling had the strongest average reference performance, while standard PFSP had the strongest worst-case point estimate.
+
+This is a negative result for the proposed default method rather than evidence that uncertainty-aware selection can never help. The study tested one uncertainty strength, one pool size, one evaluation budget, and one training duration. Stage 7 ablations will test whether the method behaves differently under other configurations.
+
+These reference and head-to-head measurements are not exact exploitability estimates.
+
+### Reproducibility Files
+
+- `results/pool_training_manifest.csv` records all 20 training runs.
+- `results/pool_benchmark_raw.csv` contains all 550 benchmark observations.
+- `results/pool_benchmark_summary.csv` contains the 22 matchup summaries.
+- `results/pool_benchmark_aggregate.csv` contains mean and worst-case reference metrics.
+- `results/pool_benchmark_paired.csv` contains all 12 paired strategy comparisons.
+- Evaluation code was published in Git commit `cd9a755`.
+
 ## Earlier Exploratory Results
 
 Earlier experiments evaluated one saved checkpoint per algorithm under unequal training procedures. Those results helped validate the environment and evaluation code but should not be used as the primary comparison between algorithms.
@@ -91,5 +218,3 @@ Wall-clock budgets depend on hardware and background system load. The manifest r
 The experiment tests one 300-second training budget. It does not show how the algorithms compare with shorter or longer training.
 
 Exploitability has not yet been measured. Head-to-head payoff and performance against random opponents do not prove that an agent approximates a Nash equilibrium.
-
-The experiment has not yet evaluated adaptive opponent-pool training or its ablations.

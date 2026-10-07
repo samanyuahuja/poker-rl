@@ -14,6 +14,7 @@ from poker_rl.suite import run_training_suite
 from poker_rl.training import train
 from poker_rl.pool_suite import run_pool_training_suite
 from poker_rl.pool_benchmark import run_pool_benchmark
+from poker_rl.pool_analysis import run_paired_analysis
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
@@ -412,6 +413,27 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
         help="Aggregate research-metrics CSV.",
     )
+    pool_analyze_parser = commands.add_parser(
+        "pool-analyze",
+        help=(
+            "Calculate paired statistical "
+            "comparisons from pool benchmark results."
+        ),
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+
+    pool_analyze_parser.add_argument(
+        "--raw-input",
+        type=Path,
+        required=True,
+        help="Raw pool-benchmark CSV.",
+    )
+    pool_analyze_parser.add_argument(
+        "--output",
+        type=Path,
+        required=True,
+        help="Paired-comparison CSV.",
+    )
     return parser
 
 
@@ -543,6 +565,17 @@ def run_pool_benchmark_command(
     return 0
 
 
+def run_pool_analyze_command(
+    args: argparse.Namespace,
+) -> int:
+    run_paired_analysis(
+        raw_input_path=args.raw_input,
+        output_path=args.output,
+    )
+
+    return 0
+
+
 def main(arguments: Optional[List[str]] = None) -> int:
     parser = build_parser()
     args = parser.parse_args(arguments)
@@ -567,6 +600,9 @@ def main(arguments: Optional[List[str]] = None) -> int:
 
     if args.command == "pool-benchmark":
         return run_pool_benchmark_command(args)
+
+    if args.command == "pool-analyze":
+        return run_pool_analyze_command(args)
 
     parser.error(f"Unknown command: {args.command}")
     return 2
