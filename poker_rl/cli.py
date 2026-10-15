@@ -20,6 +20,7 @@ from poker_rl.ablation_suite import (
     run_ablation_suite,
 )
 from poker_rl.ablation_benchmark import run_ablation_benchmark
+from poker_rl.ablation_analysis import run_ablation_paired_analysis
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="python -m poker_rl",
@@ -553,6 +554,33 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
         help="Destination for aggregate metrics.",
     )
+    ablation_analyze_parser = commands.add_parser(
+        "ablation-analyze",
+        help=(
+            "Calculate paired comparisons for "
+            "controlled ablation results."
+        ),
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+
+    ablation_analyze_parser.add_argument(
+        "--ablation-raw-input",
+        type=Path,
+        required=True,
+        help="Raw controlled-ablation benchmark CSV.",
+    )
+    ablation_analyze_parser.add_argument(
+        "--primary-raw-input",
+        type=Path,
+        required=True,
+        help="Raw primary opponent-pool benchmark CSV.",
+    )
+    ablation_analyze_parser.add_argument(
+        "--output",
+        type=Path,
+        required=True,
+        help="Destination paired-comparison CSV.",
+    )
     return parser
 
 
@@ -732,6 +760,20 @@ def run_ablation_benchmark_command(
     )
 
     return 0
+def run_ablation_analyze_command(
+    args: argparse.Namespace,
+) -> int:
+    run_ablation_paired_analysis(
+        ablation_raw_input_path=(
+            args.ablation_raw_input
+        ),
+        primary_raw_input_path=(
+            args.primary_raw_input
+        ),
+        output_path=args.output,
+    )
+
+    return 0
 
 def main(arguments: Optional[List[str]] = None) -> int:
     parser = build_parser()
@@ -766,6 +808,9 @@ def main(arguments: Optional[List[str]] = None) -> int:
 
     if args.command == "ablation-benchmark":
         return run_ablation_benchmark_command(args)
+
+    if args.command == "ablation-analyze":
+        return run_ablation_analyze_command(args)
 
     parser.error(f"Unknown command: {args.command}")
     return 2

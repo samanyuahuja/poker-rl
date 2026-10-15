@@ -1,0 +1,15 @@
+family,metric,agent_a,agent_b,difference_definition,training_seed_count,evaluation_seed_count,mean_difference,confidence_interval_95,lower_bound_95,upper_bound_95,conclusion
+uncertainty_strength,reference_mean_payoff,beta-0,beta-1,agent_a_minus_agent_b,5,5,0.10727,0.11691007075390317,-0.009640070753903163,0.22418007075390317,inconclusive
+uncertainty_strength,reference_mean_payoff,beta-0,beta-2,agent_a_minus_agent_b,5,5,0.11790124999999997,0.1353392699654572,-0.017438019965457227,0.25324051996545716,inconclusive
+uncertainty_strength,reference_mean_payoff,beta-1,beta-2,agent_a_minus_agent_b,5,5,0.010631249999999976,0.13850471519219212,-0.12787346519219214,0.1491359651921921,inconclusive
+uncertainty_strength,reference_worst_case_payoff,beta-0,beta-1,agent_a_minus_agent_b,5,5,0.010754999999999997,0.1621118347934363,-0.1513568347934363,0.17286683479343629,inconclusive
+uncertainty_strength,reference_worst_case_payoff,beta-0,beta-2,agent_a_minus_agent_b,5,5,0.0191,0.10007168609579833,-0.08097168609579833,0.11917168609579834,inconclusive
+uncertainty_strength,reference_worst_case_payoff,beta-1,beta-2,agent_a_minus_agent_b,5,5,0.008345000000000002,0.10261358632400681,-0.09426858632400681,0.11095858632400682,inconclusive
+pool_size,reference_mean_payoff,pool-5,pool-10,agent_a_minus_agent_b,5,5,-0.027410000000000004,0.06357563073403676,-0.09098563073403676,0.03616563073403675,inconclusive
+pool_size,reference_mean_payoff,pool-5,pool-20,agent_a_minus_agent_b,5,5,-0.00527125000000001,0.23589078749885897,-0.24116203749885898,0.23061953749885897,inconclusive
+pool_size,reference_mean_payoff,pool-10,pool-20,agent_a_minus_agent_b,5,5,0.022138749999999995,0.2849162472702875,-0.26277749727028754,0.3070549972702875,inconclusive
+pool_size,reference_worst_case_payoff,pool-5,pool-10,agent_a_minus_agent_b,5,5,-0.00572,0.12726128639130754,-0.13298128639130755,0.12154128639130754,inconclusive
+pool_size,reference_worst_case_payoff,pool-5,pool-20,agent_a_minus_agent_b,5,5,-0.0041699999999999975,0.1997279122190947,-0.2038979122190947,0.1955579122190947,inconclusive
+pool_size,reference_worst_case_payoff,pool-10,pool-20,agent_a_minus_agent_b,5,5,0.0015500000000000028,0.17131799689855118,-0.16976799689855118,0.17286799689855117,inconclusive
+historical_selection,reference_mean_payoff,latest,beta-1,agent_a_minus_agent_b,5,5,-0.14821875,0.21770677542395178,-0.3659255254239518,0.06948802542395177,inconclusive
+historical_selection,reference_worst_case_payoff,latest,beta-1,agent_a_minus_agent_b,5,5,-0.246365,0.37388633742243854,-0.6202513374224385,0.12752133742243854,inconclusive

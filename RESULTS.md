@@ -177,13 +177,13 @@ All paired worst-case comparisons between the four strategies include zero.
 - **H1 was not established.** Historical sampling produced better worst-case point estimates than latest-only training, but the paired confidence intervals include zero.
 - **H2 was not established.** PFSP had a better worst-case point estimate than uniform sampling, but the paired difference was inconclusive.
 - **H3 was not supported.** The uncertainty-aware method did not improve mean or worst-case payoff over standard PFSP.
-- **H4 remains untested.** Determining whether uncertainty helps under smaller evaluation budgets or different uncertainty strengths requires ablation experiments.
+- **H4 is evaluated separately below.** The primary experiment tested only the default uncertainty strength and pool size; the controlled ablation section reports the follow-up configurations.
 
 ### Interpretation
 
 The default uncertainty-aware configuration did not outperform the simpler alternatives. Under this budget, uniform sampling had the strongest average reference performance, while standard PFSP had the strongest worst-case point estimate.
 
-This is a negative result for the proposed default method rather than evidence that uncertainty-aware selection can never help. The study tested one uncertainty strength, one pool size, one evaluation budget, and one training duration. Stage 7 ablations will test whether the method behaves differently under other configurations.
+This is a negative result for the proposed default method rather than evidence that uncertainty-aware selection can never help. The controlled ablations below test additional uncertainty strengths and pool sizes under the same training budget; they likewise do not establish a statistically clear winner.
 
 These reference and head-to-head measurements are not exact exploitability estimates.
 
@@ -195,6 +195,87 @@ These reference and head-to-head measurements are not exact exploitability estim
 - `results/pool_benchmark_aggregate.csv` contains mean and worst-case reference metrics.
 - `results/pool_benchmark_paired.csv` contains all 12 paired strategy comparisons.
 - Evaluation code was published in Git commit `cd9a755`.
+
+## Controlled Ablation Experiment
+
+The exploratory ablation study tests whether uncertainty strength, historical-pool size, or historical-opponent selection changes performance under the same 300-second training budget.
+
+### Experimental Design
+
+The study trained five new configurations across training seeds 1–5:
+
+| Configuration | Family | Key setting | Checkpoint interval | Final pool size |
+|---|---|---|---:|---:|
+| Beta 0 | Uncertainty strength | `beta=0` | 30 seconds | 10 |
+| Beta 2 | Uncertainty strength | `beta=2` | 30 seconds | 10 |
+| Pool 5 | Pool size | Maximum size 5 | 10 seconds | 5 |
+| Pool 10 | Pool size | Maximum size 10 | 10 seconds | 10 |
+| Pool 20 | Pool size | Maximum size 20 | 10 seconds | 20 |
+
+The primary uncertainty run supplies the `beta=1` control. The primary latest-only run supplies the comparison without historical-opponent selection. Both controls used the same training seeds and 300-second budget.
+
+The complete ablation training contains 25 new runs:
+
+| Configuration | Mean episodes | Episode range | Checkpoints per run |
+|---|---:|---:|---:|
+| Beta 0 | 137,594 | 104,295–182,707 | 10 |
+| Beta 2 | 144,287 | 113,674–180,165 | 10 |
+| Pool 5 | 139,545 | 105,887–160,057 | 30 |
+| Pool 10 | 142,749 | 118,127–155,939 | 30 |
+| Pool 20 | 137,785 | 112,122–156,413 | 30 |
+
+Each final policy was evaluated against random, DQN, NFSP, and CFR using five evaluation seeds, 2,000 games from each player position, and matched training seeds. The evaluation contains 500 observations and 2,000,000 games.
+
+### Aggregate Reference Results
+
+| Configuration | Mean reference payoff | Worst-case reference payoff |
+|---|---:|---:|
+| Beta 0 | +0.3490 ± 0.0411 | -0.2104 ± 0.0635 |
+| Beta 1 | +0.2417 ± 0.0874 | -0.2212 ± 0.1723 |
+| Beta 2 | +0.2311 ± 0.1161 | -0.2295 ± 0.1149 |
+| Pool 5 | +0.2777 ± 0.1224 | -0.1196 ± 0.1110 |
+| Pool 10 | +0.3051 ± 0.1747 | -0.1138 ± 0.1038 |
+| Pool 20 | +0.2830 ± 0.1309 | -0.1154 ± 0.0972 |
+
+Beta 0 produced the highest mean-reference point estimate in the uncertainty-strength family. Pool 10 produced the highest mean and worst-case point estimates in the pool-size family. Point estimates alone do not establish that either configuration is better.
+
+### Paired Comparisons
+
+For each comparison, evaluation seeds were averaged within each training seed. Differences were calculated between configurations using the same training seed, and 95% confidence intervals were calculated across the five paired differences.
+
+| Family | Difference | Mean-reference difference | Worst-case difference |
+|---|---|---:|---:|
+| Uncertainty strength | Beta 0 minus Beta 1 | +0.1073 ± 0.1169 | +0.0108 ± 0.1621 |
+| Uncertainty strength | Beta 0 minus Beta 2 | +0.1179 ± 0.1353 | +0.0191 ± 0.1001 |
+| Uncertainty strength | Beta 1 minus Beta 2 | +0.0106 ± 0.1385 | +0.0083 ± 0.1026 |
+| Pool size | Pool 5 minus Pool 10 | -0.0274 ± 0.0636 | -0.0057 ± 0.1273 |
+| Pool size | Pool 5 minus Pool 20 | -0.0053 ± 0.2359 | -0.0042 ± 0.1997 |
+| Pool size | Pool 10 minus Pool 20 | +0.0221 ± 0.2849 | +0.0016 ± 0.1713 |
+| Historical selection | Latest minus Beta 1 | -0.1482 ± 0.2177 | -0.2464 ± 0.3739 |
+
+All 14 confidence intervals include zero. The experiment therefore does not establish a reliable difference for uncertainty strength, pool size, or latest-only versus default uncertainty-aware training.
+
+### Interpretation
+
+The uncertainty bonus did not produce a measurable improvement under the tested conditions. Beta 0 had the strongest mean-reference point estimate, but its paired advantages over Beta 1 and Beta 2 were inconclusive.
+
+Pool sizes 5, 10, and 20 performed similarly. Their paired mean and worst-case differences were small relative to their uncertainty, so this experiment does not support a preferred pool size.
+
+Latest-only training had weaker mean and worst-case point estimates than the default uncertainty configuration, but both paired comparisons remained inconclusive.
+
+**H4 was tested but not supported.** Changing uncertainty strength and pool size did not yield a statistically clear improvement. These are exploratory comparisons across five training seeds and should not be interpreted as proof that the hyperparameters never matter.
+
+The reference metrics are robustness measurements against a fixed opponent population. They are not exact exploitability measurements.
+
+### Reproducibility Files
+
+- `results/ablation_training_manifest.csv` records all 25 ablation training runs.
+- `results/ablation_benchmark_raw.csv` contains all 500 evaluation observations.
+- `results/ablation_benchmark_summary.csv` contains 20 reference-matchup summaries.
+- `results/ablation_benchmark_aggregate.csv` contains 10 aggregate metrics.
+- `results/ablation_benchmark_paired.csv` contains all 14 paired comparisons.
+- Training code was published in Git commit `005dc61`.
+- Evaluation code was published in Git commit `bc49b61`.
 
 ## Earlier Exploratory Results
 

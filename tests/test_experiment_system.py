@@ -545,5 +545,35 @@ class CommandLineTests(unittest.TestCase):
             Path("results/ablation_aggregate.csv"),
         )
 
+    def test_ablation_analyze_command(self):
+        args = self.parser.parse_args(
+            [
+                "ablation-analyze",
+                "--ablation-raw-input",
+                "results/ablation_raw.csv",
+                "--primary-raw-input",
+                "results/pool_raw.csv",
+                "--output",
+                "results/ablation_paired.csv",
+            ]
+        )
+
+        self.assertEqual(
+            args.command,
+            "ablation-analyze",
+        )
+        self.assertEqual(
+            args.ablation_raw_input,
+            Path("results/ablation_raw.csv"),
+        )
+        self.assertEqual(
+            args.primary_raw_input,
+            Path("results/pool_raw.csv"),
+        )
+        self.assertEqual(
+            args.output,
+            Path("results/ablation_paired.csv"),
+        )
+
 if __name__ == "__main__":
     unittest.main()

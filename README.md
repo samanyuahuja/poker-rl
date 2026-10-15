@@ -238,6 +238,17 @@ The full benchmark evaluates five ablation configurations, four reference agents
 
 Confidence intervals use the five independent training seeds as the statistical sample. The aggregate metrics measure mean and worst-case payoff against the fixed reference population; they are not exact exploitability measurements.
 
+Calculate paired seed-by-seed ablation comparisons:
+
+```bash
+python -m poker_rl ablation-analyze \
+  --ablation-raw-input results/ablation_benchmark_raw.csv \
+  --primary-raw-input results/pool_benchmark_raw.csv \
+  --output results/ablation_benchmark_paired.csv
+```
+
+The analysis compares `beta=0`, `beta=1`, and `beta=2`; pool sizes 5, 10, and 20; and latest-only training against the default uncertainty method. It averages evaluation seeds within each training seed before calculating paired differences and 95% confidence intervals.
+
 ## Legacy Commands
 
 The original standalone scripts remain available for reproducing the early experiments:
@@ -259,11 +270,11 @@ python play.py
 - [x] Research question and literature review
 - [x] Adaptive opponent-pool method
 - [x] Rigorous proposed-method experiments
-- [ ] Ablation studies
+- [x] Ablation studies
 - [ ] Final analysis and visualizations
 - [ ] Paper-style report
 - [ ] Resume-ready release
 
 ## Limitations
 
-The current agents play simplified Leduc Hold'em rather than full Texas Hold'em. Head-to-head payoff and performance against random opponents do not establish optimal play. Exact exploitability measurement and ablation studies remain future stages. See [RESULTS.md](RESULTS.md) for detailed experimental limitations. See [RESEARCH_PLAN.md](RESEARCH_PLAN.md) for the literature positioning, proposed uncertainty-aware method, hypotheses, and experimental protocol.
+The current agents play simplified Leduc Hold'em rather than full Texas Hold'em. Head-to-head payoff and performance against random opponents do not establish optimal play. Exact exploitability measurement remains a future stage. See [RESULTS.md](RESULTS.md) for detailed experimental limitations. See [RESEARCH_PLAN.md](RESEARCH_PLAN.md) for the literature positioning, proposed uncertainty-aware method, hypotheses, and experimental protocol.

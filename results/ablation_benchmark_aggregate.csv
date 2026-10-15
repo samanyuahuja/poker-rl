@@ -1,0 +1,11 @@
+ablation_label,ablation_family,metric,training_seed_count,mean_payoff,confidence_interval_95,worst_opponent
+beta-0,uncertainty_strength,reference_mean_payoff,5,0.34895624999999997,0.041128487708682535,
+beta-0,uncertainty_strength,reference_worst_case_payoff,5,-0.21044000000000002,0.06352677364602737,cfr
+beta-2,uncertainty_strength,reference_mean_payoff,5,0.231055,0.11614581362133507,
+beta-2,uncertainty_strength,reference_worst_case_payoff,5,-0.22954,0.11487863273137261,cfr
+pool-5,pool_size,reference_mean_payoff,5,0.27771375,0.12242728034575319,
+pool-5,pool_size,reference_worst_case_payoff,5,-0.11956,0.11103029572094997,dqn
+pool-10,pool_size,reference_mean_payoff,5,0.30512375,0.17466301213771662,
+pool-10,pool_size,reference_worst_case_payoff,5,-0.11384,0.10382792633821403,cfr
+pool-20,pool_size,reference_mean_payoff,5,0.282985,0.13092870490030098,
+pool-20,pool_size,reference_worst_case_payoff,5,-0.11539,0.09720628274218492,cfr
