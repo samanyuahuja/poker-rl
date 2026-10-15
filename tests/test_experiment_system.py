@@ -490,6 +490,60 @@ class CommandLineTests(unittest.TestCase):
                 "ablation_manifest.csv"
             ),
         )
+    def test_ablation_benchmark_command(self):
+        args = self.parser.parse_args(
+            [
+                "ablation-benchmark",
+                "--ablation-manifest",
+                "artifacts/ablation_manifest.csv",
+                "--baseline-manifest",
+                "artifacts/baseline_manifest.csv",
+                "--evaluation-seeds",
+                "11",
+                "22",
+                "--games-per-seat",
+                "2000",
+                "--raw-output",
+                "results/ablation_raw.csv",
+                "--summary-output",
+                "results/ablation_summary.csv",
+                "--aggregate-output",
+                "results/ablation_aggregate.csv",
+            ]
+        )
+
+        self.assertEqual(
+            args.command,
+            "ablation-benchmark",
+        )
+        self.assertEqual(
+            args.ablation_manifest,
+            Path("artifacts/ablation_manifest.csv"),
+        )
+        self.assertEqual(
+            args.baseline_manifest,
+            Path("artifacts/baseline_manifest.csv"),
+        )
+        self.assertEqual(
+            args.evaluation_seeds,
+            [11, 22],
+        )
+        self.assertEqual(
+            args.games_per_seat,
+            2000,
+        )
+        self.assertEqual(
+            args.raw_output,
+            Path("results/ablation_raw.csv"),
+        )
+        self.assertEqual(
+            args.summary_output,
+            Path("results/ablation_summary.csv"),
+        )
+        self.assertEqual(
+            args.aggregate_output,
+            Path("results/ablation_aggregate.csv"),
+        )
 
 if __name__ == "__main__":
     unittest.main()

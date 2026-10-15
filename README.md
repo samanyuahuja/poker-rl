@@ -219,6 +219,25 @@ The pool-size family compares pool sizes 5, 10, and 20 with `beta=1` and 10-seco
 
 The existing latest-only runs serve as the no-historical-selection comparison. Ablations are exploratory follow-up analyses and are reported separately from the primary experiment.
 
+### Ablation Benchmark
+
+Evaluate every trained ablation against the matched-budget random, DQN, NFSP, and CFR references:
+
+```bash
+caffeinate -i python -m poker_rl ablation-benchmark \
+  --ablation-manifest artifacts/ablation_training_manifest.csv \
+  --baseline-manifest results/matched_baseline_training_manifest.csv \
+  --evaluation-seeds 11 22 33 44 55 \
+  --games-per-seat 2000 \
+  --raw-output results/ablation_benchmark_raw.csv \
+  --summary-output results/ablation_benchmark_summary.csv \
+  --aggregate-output results/ablation_benchmark_aggregate.csv
+```
+
+The full benchmark evaluates five ablation configurations, four reference agents, five training seeds, and five independent evaluation seeds from both player positions. This produces 500 raw observations from 2,000,000 games.
+
+Confidence intervals use the five independent training seeds as the statistical sample. The aggregate metrics measure mean and worst-case payoff against the fixed reference population; they are not exact exploitability measurements.
+
 ## Legacy Commands
 
 The original standalone scripts remain available for reproducing the early experiments:

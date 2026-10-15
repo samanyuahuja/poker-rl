@@ -19,7 +19,7 @@ from poker_rl.ablation_suite import (
     ABLATION_BY_LABEL,
     run_ablation_suite,
 )
-
+from poker_rl.ablation_benchmark import run_ablation_benchmark
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="python -m poker_rl",
@@ -501,6 +501,58 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
         help="Destination ablation-manifest CSV.",
     )
+    ablation_benchmark_parser = commands.add_parser(
+        "ablation-benchmark",
+        help=(
+            "Evaluate controlled ablations against "
+            "fixed baseline agents."
+        ),
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+
+    ablation_benchmark_parser.add_argument(
+        "--ablation-manifest",
+        type=Path,
+        required=True,
+        help="Ablation training-manifest CSV.",
+    )
+    ablation_benchmark_parser.add_argument(
+        "--baseline-manifest",
+        type=Path,
+        required=True,
+        help="Matched-budget baseline training manifest.",
+    )
+    ablation_benchmark_parser.add_argument(
+        "--evaluation-seeds",
+        type=int,
+        nargs="+",
+        default=[11, 22, 33, 44, 55],
+        help="Independent evaluation seeds.",
+    )
+    ablation_benchmark_parser.add_argument(
+        "--games-per-seat",
+        type=int,
+        default=2000,
+        help="Games played from each seat.",
+    )
+    ablation_benchmark_parser.add_argument(
+        "--raw-output",
+        type=Path,
+        required=True,
+        help="Destination for detailed results.",
+    )
+    ablation_benchmark_parser.add_argument(
+        "--summary-output",
+        type=Path,
+        required=True,
+        help="Destination for matchup summaries.",
+    )
+    ablation_benchmark_parser.add_argument(
+        "--aggregate-output",
+        type=Path,
+        required=True,
+        help="Destination for aggregate metrics.",
+    )
     return parser
 
 
@@ -662,7 +714,24 @@ def run_ablation_suite_command(
     )
 
     return 0
+def run_ablation_benchmark_command(
+    args: argparse.Namespace,
+) -> int:
+    run_ablation_benchmark(
+        ablation_manifest_path=(
+            args.ablation_manifest
+        ),
+        baseline_manifest_path=(
+            args.baseline_manifest
+        ),
+        evaluation_seeds=args.evaluation_seeds,
+        games_per_seat=args.games_per_seat,
+        raw_output_path=args.raw_output,
+        summary_output_path=args.summary_output,
+        aggregate_output_path=args.aggregate_output,
+    )
 
+    return 0
 
 def main(arguments: Optional[List[str]] = None) -> int:
     parser = build_parser()
@@ -694,6 +763,9 @@ def main(arguments: Optional[List[str]] = None) -> int:
 
     if args.command == "ablation-suite":
         return run_ablation_suite_command(args)
+
+    if args.command == "ablation-benchmark":
+        return run_ablation_benchmark_command(args)
 
     parser.error(f"Unknown command: {args.command}")
     return 2
