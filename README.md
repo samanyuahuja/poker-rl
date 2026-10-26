@@ -25,6 +25,8 @@ The experiment covers 15 independently trained models and 600,000 evaluation gam
 
 See [RESULTS.md](RESULTS.md) for the complete methodology, interpretation, raw-data references, and limitations.
 
+Read the full [paper-style report](PAPER.md).
+
 ## Features
 
 - Two-player Leduc Hold'em simulation through RLCard
@@ -288,7 +290,7 @@ The payoff figures show 95% t-intervals across five independent training seeds. 
 - [x] Rigorous proposed-method experiments
 - [x] Ablation studies
 - [x] Final analysis and visualizations
-- [ ] Paper-style report
+- [x] Paper-style report
 - [ ] Resume-ready release
 
 ## Limitations
