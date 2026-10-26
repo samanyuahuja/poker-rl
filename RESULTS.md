@@ -277,6 +277,43 @@ The reference metrics are robustness measurements against a fixed opponent popul
 - Training code was published in Git commit `005dc61`.
 - Evaluation code was published in Git commit `bc49b61`.
 
+## Research Figures
+
+### Primary Robustness Metrics
+
+![Opponent-pool aggregate performance](results/pool_strategy_aggregate.png)
+
+Uniform sampling had the highest mean-reference point estimate, while PFSP had the strongest worst-case point estimate. The paired analysis is required for significance; separate interval overlap alone does not determine whether two strategies differ.
+
+### Primary Head-to-Head Matrix
+
+![Opponent-pool head-to-head heatmap](results/pool_head_to_head_heatmap.png)
+
+Positive values favor the row strategy. Every off-diagonal 95% interval includes zero, so the direct matchups do not establish a reliable winner.
+
+### Controlled Ablations
+
+![Controlled opponent-pool ablations](results/ablation_aggregate.png)
+
+Beta 0 produced the highest mean-reference point estimate in the uncertainty-strength family. Pool sizes 5, 10, and 20 produced similar results. All paired ablation intervals include zero.
+
+### Training Diagnostics
+
+![Opponent-pool training diagnostics](results/training_learning_curves.png)
+
+The curves show learner payoff against the opponents sampled during training. The sampled opponent population changes over time and differs across strategies, so the curves cannot substitute for fixed-policy evaluation. They show that latest-only training was especially variable, while uniform sampling maintained a steadier payoff later in training.
+
+### Mechanism Hypotheses
+
+The results support several explanations worth testing, but they do not establish causality:
+
+- Uniform sampling may reduce overfitting to recent checkpoints by maintaining broad historical exposure. This is consistent with its strong mean-reference result.
+- PFSP may improve weak matchups by concentrating training on opponents that cause losses. This is consistent with its strongest worst-case point estimate.
+- The uncertainty bonus may spend part of the fixed budget revisiting less-evaluated opponents rather than the opponents causing the largest current losses. Because opponent evaluation counts toward the training budget, this could reduce useful training experience.
+- Latest-only training faces a rapidly changing opponent and may cycle between narrow responses. Its variable diagnostic curve and weaker robustness point estimates are consistent with that possibility.
+
+These explanations remain hypotheses. Distinguishing them would require targeted measurements such as opponent-selection entropy, forgetting against older checkpoints, training-time decomposition, and additional independent seeds.
+
 ## Earlier Exploratory Results
 
 Earlier experiments evaluated one saved checkpoint per algorithm under unequal training procedures. Those results helped validate the environment and evaluation code but should not be used as the primary comparison between algorithms.

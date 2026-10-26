@@ -261,6 +261,22 @@ python continue_self_play.py
 python compare_models.py
 python play.py
 ```
+### Research Figures
+
+Generate the publication-ready aggregate, heatmap, ablation, and training-diagnostic figures:
+
+```bash
+python plot_research_results.py
+```
+
+The script creates:
+
+- `results/pool_strategy_aggregate.png`
+- `results/pool_head_to_head_heatmap.png`
+- `results/ablation_aggregate.png`
+- `results/training_learning_curves.png`
+
+The payoff figures show 95% t-intervals across five independent training seeds. The learning curves report payoff against changing sampled opponents during training, so they are diagnostic and should not be interpreted as fixed-policy evaluation.
 
 ## Research Roadmap
 
@@ -271,7 +287,7 @@ python play.py
 - [x] Adaptive opponent-pool method
 - [x] Rigorous proposed-method experiments
 - [x] Ablation studies
-- [ ] Final analysis and visualizations
+- [x] Final analysis and visualizations
 - [ ] Paper-style report
 - [ ] Resume-ready release
 
