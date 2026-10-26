@@ -25,7 +25,8 @@ The experiment covers 15 independently trained models and 600,000 evaluation gam
 
 See [RESULTS.md](RESULTS.md) for the complete methodology, interpretation, raw-data references, and limitations.
 
-Read the full [paper-style report](PAPER.md).
+Read the full [paper-style report](PAPER.md) or download the
+[formatted research paper](paper/poker_rl_research_paper.pdf).
 
 ## Features
 
@@ -55,6 +56,27 @@ Install the dependencies:
 ```bash
 python -m pip install -r requirements.txt
 ```
+
+## Quick Demo
+
+Train a small DQN for an interactive demonstration:
+
+```bash
+python -m poker_rl train \
+  --algorithm dqn \
+  --seed 42 \
+  --budget-seconds 30 \
+  --run-name demo-dqn
+```
+
+Play Leduc Hold'em against the saved agent:
+
+```bash
+python play.py --agent artifacts/demo-dqn
+```
+
+The 30-second run is intended only for the terminal demo. The published
+research results use five independent 300-second training runs per method.
 
 ## Reproducible Experiment CLI
 
