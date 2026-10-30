@@ -1,5 +1,7 @@
 # Poker Reinforcement Learning
 
+[![Tests](https://github.com/samanyuahuja/poker-rl/actions/workflows/tests.yml/badge.svg)](https://github.com/samanyuahuja/poker-rl/actions/workflows/tests.yml)
+
 A reproducible reinforcement-learning research project for studying decision-making in imperfect-information games using two-player Leduc Hold'em.
 
 The project trains and compares Deep Q-Network (DQN), Neural Fictitious Self-Play (NFSP), Counterfactual Regret Minimization (CFR), and random-policy agents.
@@ -27,6 +29,8 @@ See [RESULTS.md](RESULTS.md) for the complete methodology, interpretation, raw-d
 
 Read the full [paper-style report](PAPER.md) or download the
 [formatted research paper](paper/poker_rl_research_paper.pdf).
+The reproducible project snapshot is available as the
+[v1.0.0 release](https://github.com/samanyuahuja/poker-rl/releases/tag/v1.0.0).
 
 ## Features
 
@@ -302,6 +306,10 @@ The script creates:
 
 The payoff figures show 95% t-intervals across five independent training seeds. The learning curves report payoff against changing sampled opponents during training, so they are diagnostic and should not be interpreted as fixed-policy evaluation.
 
+## Resume Highlight
+
+> Built a reproducible Leduc Hold'em reinforcement-learning research framework comparing DQN, NFSP, CFR, and four historical-opponent sampling strategies across 60 independent 300-second training runs and 4.8 million seat-balanced evaluation games, with multi-seed confidence intervals, controlled ablations, 66 automated tests, and a paper-style report.
+
 ## Research Roadmap
 
 - [x] GitHub setup and project hygiene
@@ -313,7 +321,7 @@ The payoff figures show 95% t-intervals across five independent training seeds. 
 - [x] Ablation studies
 - [x] Final analysis and visualizations
 - [x] Paper-style report
-- [ ] Resume-ready release
+- [x] Resume-ready release
 
 ## Limitations
 
