@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import math
 import platform
 import subprocess
 from dataclasses import asdict, dataclass
@@ -33,9 +34,12 @@ class TrainConfig:
                 f"Choose from: {choices}."
             )
 
-        if self.budget_seconds <= 0:
+        if (
+            not math.isfinite(self.budget_seconds)
+            or self.budget_seconds <= 0
+        ):
             raise ValueError(
-                "budget_seconds must be greater than zero."
+                "budget_seconds must be finite and greater than zero."
             )
 
         if self.max_units is not None and self.max_units <= 0:
