@@ -39,6 +39,16 @@ class TrainConfigTests(unittest.TestCase):
                 budget_seconds=0,
             )
 
+    def test_rejects_non_finite_budget(self):
+        for budget_seconds in [float("nan"), float("inf")]:
+            with self.subTest(budget_seconds=budget_seconds):
+                with self.assertRaises(ValueError):
+                    TrainConfig(
+                        algorithm="dqn",
+                        seed=42,
+                        budget_seconds=budget_seconds,
+                    )
+
     def test_rejects_nested_run_name(self):
         with self.assertRaises(ValueError):
             TrainConfig(
