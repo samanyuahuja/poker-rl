@@ -45,6 +45,16 @@ def validate_inputs(
             "At least one opponent is required."
         )
 
+    if not np.all(np.isfinite(loss_rates)):
+        raise ValueError(
+            "Every loss rate must be finite."
+        )
+
+    if not np.all(np.isfinite(evaluation_counts)):
+        raise ValueError(
+            "Every evaluation count must be finite."
+        )
+
     if np.any(loss_rates < 0) or np.any(loss_rates > 1):
         raise ValueError(
             "Every loss rate must be between zero and one."
@@ -173,6 +183,11 @@ def select_opponent(
     if len(probability_array) == 0:
         raise ValueError(
             "At least one probability is required."
+        )
+
+    if not np.all(np.isfinite(probability_array)):
+        raise ValueError(
+            "Probabilities must be finite."
         )
 
     if np.any(probability_array < 0):
