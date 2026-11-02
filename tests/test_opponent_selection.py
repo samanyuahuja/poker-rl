@@ -81,6 +81,33 @@ class SelectionProbabilityTests(unittest.TestCase):
         self.assertGreater(probabilities[0], 0)
         self.assertGreater(probabilities[1], 0)
 
+    def test_rejects_non_finite_matchup_statistics(self):
+        invalid_inputs = [
+            ([float("nan"), 0.5], [10, 10]),
+            ([0.5, 0.5], [10, float("inf")]),
+        ]
+
+        for loss_rates, evaluation_counts in invalid_inputs:
+            with self.subTest(
+                loss_rates=loss_rates,
+                evaluation_counts=evaluation_counts,
+            ):
+                with self.assertRaises(ValueError):
+                    selection_probabilities(
+                        strategy="uncertainty",
+                        loss_rates=loss_rates,
+                        evaluation_counts=evaluation_counts,
+                    )
+
+    def test_rejects_non_finite_sampling_probabilities(self):
+        random_generator = np.random.default_rng(42)
+
+        with self.assertRaises(ValueError):
+            select_opponent(
+                [float("nan"), float("nan")],
+                random_generator,
+            )
+
     def test_seeded_sampling_is_reproducible(self):
         first_generator = np.random.default_rng(42)
         second_generator = np.random.default_rng(42)
