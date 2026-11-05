@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 from datetime import datetime
+import math
 from pathlib import Path
 from typing import Dict, Optional
 
@@ -38,14 +39,20 @@ class PoolTrainConfig:
                 f"Choose from: {choices}."
             )
 
-        if self.budget_seconds <= 0:
+        if (
+            not math.isfinite(self.budget_seconds)
+            or self.budget_seconds <= 0
+        ):
             raise ValueError(
-                "budget_seconds must be greater than zero."
+                "budget_seconds must be finite and greater than zero."
             )
 
-        if self.checkpoint_seconds <= 0:
+        if (
+            not math.isfinite(self.checkpoint_seconds)
+            or self.checkpoint_seconds <= 0
+        ):
             raise ValueError(
-                "checkpoint_seconds must be greater than zero."
+                "checkpoint_seconds must be finite and greater than zero."
             )
 
         if self.checkpoint_seconds > self.budget_seconds:
