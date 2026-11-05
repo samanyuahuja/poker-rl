@@ -55,6 +55,11 @@ def validate_inputs(
             "Every evaluation count must be finite."
         )
 
+    if np.any(evaluation_counts != np.floor(evaluation_counts)):
+        raise ValueError(
+            "Every evaluation count must be a whole number."
+        )
+
     if np.any(loss_rates < 0) or np.any(loss_rates > 1):
         raise ValueError(
             "Every loss rate must be between zero and one."
