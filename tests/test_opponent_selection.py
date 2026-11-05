@@ -108,6 +108,14 @@ class SelectionProbabilityTests(unittest.TestCase):
                 random_generator,
             )
 
+    def test_rejects_fractional_evaluation_counts(self):
+        with self.assertRaises(ValueError):
+            selection_probabilities(
+                strategy="uncertainty",
+                loss_rates=[0.5, 0.5],
+                evaluation_counts=[10, 2.5],
+            )
+
     def test_seeded_sampling_is_reproducible(self):
         first_generator = np.random.default_rng(42)
         second_generator = np.random.default_rng(42)
