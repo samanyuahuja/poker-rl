@@ -65,6 +65,25 @@ class PoolTrainConfigTests(unittest.TestCase):
                 checkpoint_seconds=20,
             )
 
+    def test_rejects_non_finite_timing(self):
+        invalid_timings = [
+            {"budget_seconds": float("nan")},
+            {"budget_seconds": float("inf")},
+            {
+                "budget_seconds": 60,
+                "checkpoint_seconds": float("nan"),
+            },
+        ]
+
+        for timing in invalid_timings:
+            with self.subTest(timing=timing):
+                with self.assertRaises(ValueError):
+                    PoolTrainConfig(
+                        strategy="latest",
+                        seed=1,
+                        **timing,
+                    )
+
     def test_rejects_unsafe_run_name(self):
         with self.assertRaises(ValueError):
             PoolTrainConfig(
