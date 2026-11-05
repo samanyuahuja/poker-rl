@@ -8,7 +8,7 @@ from pathlib import Path
 
 from poker_rl.cli import build_parser
 from poker_rl.config import TrainConfig
-from poker_rl.evaluation import confidence_interval_95
+from poker_rl.evaluation import confidence_interval_95, evaluate_matchup
 
 
 class TrainConfigTests(unittest.TestCase):
@@ -75,6 +75,18 @@ class ConfidenceIntervalTests(unittest.TestCase):
             1.963,
             places=3,
         )
+
+
+class EvaluationInputTests(unittest.TestCase):
+    def test_rejects_duplicate_evaluation_seeds(self):
+        with self.assertRaises(ValueError):
+            evaluate_matchup(
+                agent_a_spec="random",
+                agent_b_spec="random",
+                seeds=[11, 11],
+                games_per_seat=10,
+                output_path=Path("unused.csv"),
+            )
 
 class BenchmarkManifestTests(unittest.TestCase):
     def write_manifest(self, directory, rows):

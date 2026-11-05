@@ -160,6 +160,11 @@ def evaluate_matchup(
             "At least one evaluation seed is required."
         )
 
+    if len(set(seeds)) != len(seeds):
+        raise ValueError(
+            "Evaluation seeds must be unique."
+        )
+
     if games_per_seat <= 0:
         raise ValueError(
             "games_per_seat must be greater than zero."
