@@ -49,6 +49,25 @@ class TrainConfigTests(unittest.TestCase):
                         budget_seconds=budget_seconds,
                     )
 
+    def test_rejects_invalid_integer_settings(self):
+        invalid_settings = [
+            {"seed": -1},
+            {"seed": True},
+            {"max_units": 2.5},
+            {"log_every": False},
+        ]
+
+        for settings in invalid_settings:
+            with self.subTest(settings=settings):
+                with self.assertRaises(ValueError):
+                    arguments = dict(
+                        algorithm="dqn",
+                        seed=42,
+                        budget_seconds=60,
+                    )
+                    arguments.update(settings)
+                    TrainConfig(**arguments)
+
     def test_rejects_nested_run_name(self):
         with self.assertRaises(ValueError):
             TrainConfig(

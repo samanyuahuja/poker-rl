@@ -8,6 +8,7 @@ import platform
 import subprocess
 from dataclasses import asdict, dataclass
 from datetime import datetime
+from numbers import Integral
 from pathlib import Path
 from typing import Any, Dict, Optional
 
@@ -42,14 +43,29 @@ class TrainConfig:
                 "budget_seconds must be finite and greater than zero."
             )
 
-        if self.max_units is not None and self.max_units <= 0:
+        if (
+            isinstance(self.seed, bool)
+            or not isinstance(self.seed, Integral)
+            or self.seed < 0
+        ):
+            raise ValueError("seed must be a non-negative integer.")
+
+        if self.max_units is not None and (
+            isinstance(self.max_units, bool)
+            or not isinstance(self.max_units, Integral)
+            or self.max_units <= 0
+        ):
             raise ValueError(
-                "max_units must be greater than zero."
+                "max_units must be a positive integer."
             )
 
-        if self.log_every <= 0:
+        if (
+            isinstance(self.log_every, bool)
+            or not isinstance(self.log_every, Integral)
+            or self.log_every <= 0
+        ):
             raise ValueError(
-                "log_every must be greater than zero."
+                "log_every must be a positive integer."
             )
 
         if self.run_name is not None:
