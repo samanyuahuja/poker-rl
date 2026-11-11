@@ -105,6 +105,26 @@ class PoolTrainConfigTests(unittest.TestCase):
                         **timing,
                     )
 
+    def test_rejects_invalid_continuous_settings(self):
+        invalid_settings = [
+            {"budget_seconds": True},
+            {"checkpoint_seconds": False},
+            {"beta": float("nan")},
+            {"epsilon": float("inf")},
+            {"temperature": float("nan")},
+        ]
+
+        for settings in invalid_settings:
+            with self.subTest(settings=settings):
+                arguments = {
+                    "strategy": "uncertainty",
+                    "seed": 1,
+                    "budget_seconds": 60,
+                }
+                arguments.update(settings)
+                with self.assertRaises(ValueError):
+                    PoolTrainConfig(**arguments)
+
     def test_rejects_unsafe_run_name(self):
         with self.assertRaises(ValueError):
             PoolTrainConfig(
