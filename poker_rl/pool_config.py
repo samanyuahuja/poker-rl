@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass
 from datetime import datetime
 import math
+from numbers import Integral
 from pathlib import Path
 from typing import Dict, Optional
 
@@ -40,6 +41,13 @@ class PoolTrainConfig:
             )
 
         if (
+            isinstance(self.seed, bool)
+            or not isinstance(self.seed, Integral)
+            or self.seed < 0
+        ):
+            raise ValueError("seed must be a non-negative integer.")
+
+        if (
             not math.isfinite(self.budget_seconds)
             or self.budget_seconds <= 0
         ):
@@ -62,16 +70,22 @@ class PoolTrainConfig:
             )
 
         if (
-            self.evaluation_games <= 0
+            isinstance(self.evaluation_games, bool)
+            or not isinstance(self.evaluation_games, Integral)
+            or self.evaluation_games <= 0
             or self.evaluation_games % 2 != 0
         ):
             raise ValueError(
                 "evaluation_games must be a positive even number."
             )
 
-        if self.max_pool_size <= 0:
+        if (
+            isinstance(self.max_pool_size, bool)
+            or not isinstance(self.max_pool_size, Integral)
+            or self.max_pool_size <= 0
+        ):
             raise ValueError(
-                "max_pool_size must be greater than zero."
+                "max_pool_size must be a positive integer."
             )
 
         if self.beta < 0:
@@ -87,17 +101,25 @@ class PoolTrainConfig:
                 "temperature must be greater than zero."
             )
 
-        if self.log_every <= 0:
+        if (
+            isinstance(self.log_every, bool)
+            or not isinstance(self.log_every, Integral)
+            or self.log_every <= 0
+        ):
             raise ValueError(
-                "log_every must be greater than zero."
+                "log_every must be a positive integer."
             )
 
         if (
             self.max_episodes is not None
-            and self.max_episodes <= 0
+            and (
+                isinstance(self.max_episodes, bool)
+                or not isinstance(self.max_episodes, Integral)
+                or self.max_episodes <= 0
+            )
         ):
             raise ValueError(
-                "max_episodes must be greater than zero."
+                "max_episodes must be a positive integer."
             )
 
         if self.run_name is not None:
