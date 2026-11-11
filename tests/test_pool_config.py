@@ -56,6 +56,27 @@ class PoolTrainConfigTests(unittest.TestCase):
                 evaluation_games=99,
             )
 
+    def test_rejects_invalid_integer_settings(self):
+        invalid_settings = [
+            {"seed": True},
+            {"seed": -1},
+            {"evaluation_games": 100.5},
+            {"max_pool_size": False},
+            {"log_every": 2.5},
+            {"max_episodes": 1.5},
+        ]
+
+        for settings in invalid_settings:
+            with self.subTest(settings=settings):
+                arguments = {
+                    "strategy": "uncertainty",
+                    "seed": 1,
+                    "budget_seconds": 60,
+                }
+                arguments.update(settings)
+                with self.assertRaises(ValueError):
+                    PoolTrainConfig(**arguments)
+
     def test_rejects_checkpoint_interval_over_budget(self):
         with self.assertRaises(ValueError):
             PoolTrainConfig(
