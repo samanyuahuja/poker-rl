@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass
 from datetime import datetime
 import math
-from numbers import Integral
+from numbers import Integral, Real
 from pathlib import Path
 from typing import Dict, Optional
 
@@ -48,7 +48,9 @@ class PoolTrainConfig:
             raise ValueError("seed must be a non-negative integer.")
 
         if (
-            not math.isfinite(self.budget_seconds)
+            isinstance(self.budget_seconds, bool)
+            or not isinstance(self.budget_seconds, Real)
+            or not math.isfinite(self.budget_seconds)
             or self.budget_seconds <= 0
         ):
             raise ValueError(
@@ -56,7 +58,9 @@ class PoolTrainConfig:
             )
 
         if (
-            not math.isfinite(self.checkpoint_seconds)
+            isinstance(self.checkpoint_seconds, bool)
+            or not isinstance(self.checkpoint_seconds, Real)
+            or not math.isfinite(self.checkpoint_seconds)
             or self.checkpoint_seconds <= 0
         ):
             raise ValueError(
@@ -88,17 +92,32 @@ class PoolTrainConfig:
                 "max_pool_size must be a positive integer."
             )
 
-        if self.beta < 0:
+        if (
+            isinstance(self.beta, bool)
+            or not isinstance(self.beta, Real)
+            or not math.isfinite(self.beta)
+            or self.beta < 0
+        ):
             raise ValueError("beta cannot be negative.")
 
-        if not 0 <= self.epsilon <= 1:
+        if (
+            isinstance(self.epsilon, bool)
+            or not isinstance(self.epsilon, Real)
+            or not math.isfinite(self.epsilon)
+            or not 0 <= self.epsilon <= 1
+        ):
             raise ValueError(
                 "epsilon must be between zero and one."
             )
 
-        if self.temperature <= 0:
+        if (
+            isinstance(self.temperature, bool)
+            or not isinstance(self.temperature, Real)
+            or not math.isfinite(self.temperature)
+            or self.temperature <= 0
+        ):
             raise ValueError(
-                "temperature must be greater than zero."
+                "temperature must be finite and greater than zero."
             )
 
         if (
