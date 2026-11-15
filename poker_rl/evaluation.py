@@ -6,6 +6,7 @@ import csv
 import json
 import math
 import statistics
+from numbers import Integral
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
@@ -158,6 +159,16 @@ def evaluate_matchup(
     if not seeds:
         raise ValueError(
             "At least one evaluation seed is required."
+        )
+
+    if any(
+        isinstance(seed, bool)
+        or not isinstance(seed, Integral)
+        or seed < 0
+        for seed in seeds
+    ):
+        raise ValueError(
+            "Evaluation seeds must be non-negative integers."
         )
 
     if len(set(seeds)) != len(seeds):
