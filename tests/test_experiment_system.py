@@ -97,6 +97,21 @@ class ConfidenceIntervalTests(unittest.TestCase):
 
 
 class EvaluationInputTests(unittest.TestCase):
+    def test_rejects_invalid_game_counts(self):
+        for games_per_seat in [0, True, 1.5]:
+            with self.subTest(games_per_seat=games_per_seat):
+                with self.assertRaisesRegex(
+                    ValueError,
+                    "positive integer",
+                ):
+                    evaluate_matchup(
+                        agent_a_spec="random",
+                        agent_b_spec="random",
+                        seeds=[11],
+                        games_per_seat=games_per_seat,
+                        output_path=Path("unused.csv"),
+                    )
+
     def test_rejects_invalid_evaluation_seeds(self):
         for seed in [-1, True, 1.5]:
             with self.subTest(seed=seed):
