@@ -135,6 +135,11 @@ def confidence_interval_95(
     if len(values) < 2:
         return None
 
+    if any(not math.isfinite(value) for value in values):
+        raise ValueError(
+            "Confidence interval values must be finite."
+        )
+
     degrees_of_freedom = len(values) - 1
     critical_value = T_CRITICAL_95.get(
         degrees_of_freedom,

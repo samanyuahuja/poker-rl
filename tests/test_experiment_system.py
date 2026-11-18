@@ -95,6 +95,15 @@ class ConfidenceIntervalTests(unittest.TestCase):
             places=3,
         )
 
+    def test_rejects_non_finite_values(self):
+        for value in [float("nan"), float("inf")]:
+            with self.subTest(value=value):
+                with self.assertRaisesRegex(
+                    ValueError,
+                    "must be finite",
+                ):
+                    confidence_interval_95([0.1, value])
+
 
 class EvaluationInputTests(unittest.TestCase):
     def test_rejects_invalid_game_counts(self):
