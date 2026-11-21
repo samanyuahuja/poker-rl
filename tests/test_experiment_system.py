@@ -2,7 +2,10 @@
 import csv
 import tempfile
 
-from poker_rl.benchmark import read_training_manifest
+from poker_rl.benchmark import (
+    read_training_manifest,
+    run_baseline_benchmark,
+)
 import unittest
 from pathlib import Path
 
@@ -231,6 +234,18 @@ class BenchmarkManifestTests(unittest.TestCase):
 
             with self.assertRaises(ValueError):
                 read_training_manifest(manifest_path)
+
+    def test_rejects_invalid_evaluation_seeds(self):
+        for evaluation_seeds in [[-1], [True], [1.5], [11, 11]]:
+            with self.subTest(evaluation_seeds=evaluation_seeds):
+                with self.assertRaises(ValueError):
+                    run_baseline_benchmark(
+                        manifest_path=Path("unused.csv"),
+                        evaluation_seeds=evaluation_seeds,
+                        games_per_seat=10,
+                        raw_output_path=Path("unused-raw.csv"),
+                        summary_output_path=Path("unused-summary.csv"),
+                    )
 
 class CommandLineTests(unittest.TestCase):
     def setUp(self):
