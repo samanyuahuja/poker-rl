@@ -247,6 +247,21 @@ class BenchmarkManifestTests(unittest.TestCase):
                         summary_output_path=Path("unused-summary.csv"),
                     )
 
+    def test_rejects_invalid_baseline_game_counts(self):
+        for games_per_seat in [0, True, 1.5]:
+            with self.subTest(games_per_seat=games_per_seat):
+                with self.assertRaisesRegex(
+                    ValueError,
+                    "positive integer",
+                ):
+                    run_baseline_benchmark(
+                        manifest_path=Path("unused.csv"),
+                        evaluation_seeds=[11],
+                        games_per_seat=games_per_seat,
+                        raw_output_path=Path("unused-raw.csv"),
+                        summary_output_path=Path("unused-summary.csv"),
+                    )
+
 class CommandLineTests(unittest.TestCase):
     def setUp(self):
         self.parser = build_parser()

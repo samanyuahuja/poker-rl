@@ -228,9 +228,13 @@ def run_baseline_benchmark(
             "Evaluation seeds must be unique."
         )
 
-    if games_per_seat <= 0:
+    if (
+        isinstance(games_per_seat, bool)
+        or not isinstance(games_per_seat, Integral)
+        or games_per_seat <= 0
+    ):
         raise ValueError(
-            "games_per_seat must be greater than zero."
+            "games_per_seat must be a positive integer."
         )
 
     runs, training_seeds, budget_seconds = (
